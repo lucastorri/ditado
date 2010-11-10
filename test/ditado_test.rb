@@ -2,17 +2,17 @@ require 'rspec'
 require 'FileUtils'
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado.rb')
 
-describe Ditado, 'when ditado is initted on a given folder where' do
+DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
+DITADO_FILES_FOLDER = DITADO_TEST_ENVIRONMENT + '/.ditado'
+DITADO_PROJECT_DESCRIPTION_FILE = DITADO_FILES_FOLDER + '/project'
+DITADO_WIKI_FOLDER = DITADO_FILES_FOLDER + '/wiki'
+DITADO_WIKI_HOME_FILE = DITADO_WIKI_FOLDER + '/index'
+DITADO_ISSUES_FOLDER = DITADO_FILES_FOLDER + '/issues'
 
-  DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
-  DITADO_FILES_FOLDER = DITADO_TEST_ENVIRONMENT + '/.ditado'
-  DITADO_PROJECT_DESCRIPTION_FILE = DITADO_FILES_FOLDER + '/project'
-  DITADO_WIKI_FOLDER = DITADO_FILES_FOLDER + '/wiki'
-  DITADO_WIKI_HOME_FILE = DITADO_WIKI_FOLDER + '/index'
-  DITADO_ISSUES_FOLDER = DITADO_FILES_FOLDER + '/issues'
+describe Ditado, 'when ditado is initted on a given folder where' do
   
   before(:each) do
-    @ditado = Ditado.new DITADO_TEST_ENVIRONMENT
+    @ditado = Ditado::Ditado.new DITADO_TEST_ENVIRONMENT
     begin 
       FileUtils.mkdir DITADO_TEST_ENVIRONMENT
     rescue Exception
