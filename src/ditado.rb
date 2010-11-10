@@ -1,4 +1,5 @@
 require 'FileUtils'
+require 'digest/sha1'
 
 module Ditado
   
@@ -30,7 +31,7 @@ module Ditado
     end
     
     def issue_add(msg)
-      new_issue_id = last_issue_id + 1
+      new_issue_id = Digest::SHA1.hexdigest(msg)
       open("#{@issues_folder}/#{new_issue_id}", 'w') do |f|
         f.write msg
       end
@@ -43,16 +44,6 @@ module Ditado
         open(issue_file) do |f|
           return f.read
         end
-      end
-    end
-    
-    private 
-    def last_issue_id
-      issues_folder_entries = Dir.new(@issues_folder).entries
-      if issues_folder_entries == ['.', '..'] then
-        -1
-      else 
-        issues_folder_entries.map { |issue_filename| issue_filename.to_i }.sort.last
       end
     end
   

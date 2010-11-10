@@ -94,7 +94,9 @@ end
 describe Ditado, 'when working with issues' do
   
   ISSUE_MESSAGE_1 = 'This software does not work.'
+  ISSUE_MESSAGE_1_SHA1 = '53863f107a09de9df9d6a947d710631cc2b7dadf'
   ISSUE_MESSAGE_2 = 'It is still not working, dam you!'
+  ISSUE_MESSAGE_2_SHA1 = 'd8285e8384b6a4dac9f9da79fdd85f3bbf214dec'
   
   before(:each) do
     setup_environment
@@ -102,17 +104,28 @@ describe Ditado, 'when working with issues' do
     @ditado.init
   end
   
-  it 'should be able to add and persist new issues' do
-    issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
-    issue_id_2 = @ditado.issue_add ISSUE_MESSAGE_2
+  # ID must the hash of the file, otherwise will conflict in a distribute environment
+  
+  context 'and creating issues' do
     
-    open("#{DITADO_ISSUES_FOLDER}/0") do |f|
-      f.read.should == ISSUE_MESSAGE_1
+    it 'should set the issue ids as SHA1 hash keys from the issue message' do
+      @ditado.issue_add(ISSUE_MESSAGE_1).should == ISSUE_MESSAGE_1_SHA1
+      @ditado.issue_add(ISSUE_MESSAGE_2).should == ISSUE_MESSAGE_2_SHA1
     end
     
-    open("#{DITADO_ISSUES_FOLDER}/1") do |f|
-      f.read.should == ISSUE_MESSAGE_2
-    end    
+    it 'should be able to add and persist new issues' do
+      issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
+      issue_id_2 = @ditado.issue_add ISSUE_MESSAGE_2
+
+      open("#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_1_SHA1}") do |f|
+        f.read.should == ISSUE_MESSAGE_1
+      end
+
+      open("#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_2_SHA1}") do |f|
+        f.read.should == ISSUE_MESSAGE_2
+      end    
+    end
+    
   end
   
   context 'and retrieving issues' do
@@ -126,9 +139,13 @@ describe Ditado, 'when working with issues' do
     end
     
     it 'should return nil when the issue does not exist' do
-      @ditado.issue_get(51).should be_nil
+      @ditado.issue_get('00').should be_nil
     end
   
+  end
+  
+  it 'should be able to remove an issue' do
+    
   end
   
   after(:each) do
