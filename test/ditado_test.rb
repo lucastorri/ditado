@@ -95,8 +95,10 @@ describe Ditado, 'when working with issues' do
   
   ISSUE_MESSAGE_1 = 'This software does not work.'
   ISSUE_MESSAGE_1_SHA1 = '53863f107a09de9df9d6a947d710631cc2b7dadf'
+  ISSUE_MESSAGE_1_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_1_SHA1}"
   ISSUE_MESSAGE_2 = 'It is still not working, dam you!'
   ISSUE_MESSAGE_2_SHA1 = 'd8285e8384b6a4dac9f9da79fdd85f3bbf214dec'
+  ISSUE_MESSAGE_2_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_2_SHA1}"
   
   before(:each) do
     setup_environment
@@ -117,11 +119,11 @@ describe Ditado, 'when working with issues' do
       issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
       issue_id_2 = @ditado.issue_add ISSUE_MESSAGE_2
 
-      open("#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_1_SHA1}") do |f|
+      open(ISSUE_MESSAGE_1_FILE) do |f|
         f.read.should == ISSUE_MESSAGE_1
       end
 
-      open("#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_2_SHA1}") do |f|
+      open(ISSUE_MESSAGE_2_FILE) do |f|
         f.read.should == ISSUE_MESSAGE_2
       end    
     end
@@ -144,8 +146,18 @@ describe Ditado, 'when working with issues' do
   
   end
   
-  it 'should be able to remove an issue' do
-    
+  context 'and removing issues' do
+  
+    it 'should return false when the issue does not exist' do
+      @ditado.issue_del('00').should be_false
+    end
+  
+    it 'should be able to remove an existent issue' do
+      issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
+      @ditado.issue_del(issue_id_1).should be_true
+      File.exists?(ISSUE_MESSAGE_1_FILE).should be_false
+    end
+  
   end
   
   after(:each) do

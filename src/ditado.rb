@@ -46,6 +46,16 @@ module Ditado
         end
       end
     end
+    
+    def issue_del(id)
+      issue_file = "#{@issues_folder}/#{id}"
+      if File.exists? issue_file then
+        FileUtils.rm issue_file
+        true
+      else
+        false
+      end
+    end
   
   end
 
