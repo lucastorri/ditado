@@ -1,0 +1,10 @@
+#!/usb/bin/env ruby
+
+if ARGV[0] == 'init' then
+  new_ditado_dir = Dir.pwd
+  if ARGV[1] and ARGV[1].start_with? '/'
+    new_ditado_dir = ARGV[1]
+  else
+    new_ditado_dir += ARGV[1]
+  end
+end
