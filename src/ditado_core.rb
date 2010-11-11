@@ -15,18 +15,6 @@ module Ditado
   WIKI_FOLDER_NAME = 'wiki'
   WIKI_HOME_FILE = 'index'
   ISSUES_FOLDER_NAME = 'issues'
-  
-  class DitadoException < Exception
-  end
-  
-  class DitadoAlreadyInittedException < DitadoException
-  end
-  
-  class IssueIdNotExistentException < DitadoException
-  end
-  
-  class IssueIDAlreadyExistentException < DitadoException
-  end
 
   class Ditado
   

@@ -6,6 +6,7 @@ require 'digest/sha1'
 require 'rack/test'
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_core')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_web_client')
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_exceptions')
 
 DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
 DITADO_FILES_FOLDER = DITADO_TEST_ENVIRONMENT + '/.ditado'
