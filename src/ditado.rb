@@ -69,6 +69,7 @@ module Ditado
       FileUtils.rm issue_file
     end
     
+    private
     def diffstamp
        Time.now.to_s
     end
