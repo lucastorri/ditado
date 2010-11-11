@@ -69,7 +69,7 @@ module Ditado
     end
     
     def ui_start
-      DitadoWebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
+      Ditado::WebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
     end
     
     private

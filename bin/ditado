@@ -39,7 +39,7 @@ case ARGV[0]
         ditado.issue_edit(ARGV[2], ARGV[3..-1].join(' '))
         
       when 'get'
-        if ARGV[2].nil?
+        if ARGV[2].nil? then
           puts "Too few arguments"
           exit
         end
@@ -53,6 +53,14 @@ case ARGV[0]
         
       else
         puts "Too few arguments"
+    end
+    
+  when 'ui'
+    if ARGV[1] == 'start' then
+      ditado = Ditado::Core.new Dir.pwd
+      ditado.ui_start
+    else
+      puts "Too few arguments"
     end
     
   else
