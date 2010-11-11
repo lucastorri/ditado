@@ -52,6 +52,18 @@ module Ditado
       end
     end
     
+    def issue_edit(id, content)
+      issue_file = "#{@issues_folder}/#{id}"
+      if File.exists? issue_file then
+        open(issue_file, 'w') do |f|
+          return f.write content
+        end
+        true
+      else
+        false
+      end
+    end
+    
     def issue_del(id)
       issue_file = "#{@issues_folder}/#{id}"
       if File.exists? issue_file then

@@ -178,6 +178,33 @@ describe Ditado, 'when working with issues' do
   
   end
   
+  context 'and editing issues' do
+    
+    NEW_ISSUE_CONTENT_1 = 'When are you going to fix this?'
+    
+    before(:each) do
+      @ditado.stub!(:diffstamp).and_return('2010-11-10 21:44:44 -0200')
+      @ditado.issue_add(ISSUE_CONTENT_1)
+    end
+    
+    it 'should be able to change the content of a issue' do
+      content_before = ''
+      open(ISSUE_CONTENT_1_FILE) do |f|
+        content_before = f.read
+      end
+      
+      @ditado.issue_edit(ISSUE_CONTENT_1_SHA1, NEW_ISSUE_CONTENT_1).should be_true
+      open(ISSUE_CONTENT_1_FILE) do |f|
+        f.read.should == NEW_ISSUE_CONTENT_1
+      end
+    end
+    
+    it 'should not be able to edit an inexistent issue' do
+      @ditado.issue_edit('00', NEW_ISSUE_CONTENT_1).should be_false
+    end
+    
+  end
+  
   after(:each) do
     teardown_environment
   end
