@@ -56,6 +56,16 @@ describe Ditado::Core, 'when using UI' do
     last_response.should be_not_found
   end
   
+  it 'should be able to add an issue' do
+    post "/issues", ISSUE_CONTENT_1
+    last_response.should be_redirect
+    
+    follow_redirect!
+    (last_request.path =~ /\/issues\/[\w\d]{40}/).should == 0
+    last_response.should be_ok
+    last_response.body.should == ISSUE_CONTENT_1
+  end
+  
   after(:all) do
     teardown_environment
   end
