@@ -145,6 +145,13 @@ describe Ditado, 'when working with issues' do
       end
     end
     
+    it 'should be able to identify if a issue exists' do
+      issue_id_1 = @ditado.issue_add(ISSUE_CONTENT_1)
+      @ditado.issue_exists?(issue_id_1).should be_true
+      
+      @ditado.issue_exists?('00').should be_false
+    end
+    
   end
   
   context 'and retrieving issues' do

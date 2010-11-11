@@ -34,34 +34,34 @@ module Ditado
     
     def issue_add(content)
       new_issue_id = Digest::SHA1.hexdigest(content + diffstamp)
-      issue_file = "#{@issues_folder}/#{new_issue_id}"
-      raise IssueIDAlreadyExistentException.new if File.exists?(issue_file)
-      open(issue_file, 'w') do |f|
+      raise IssueIDAlreadyExistentException.new if issue_exists?(new_issue_id)
+      open(issue_file(new_issue_id), 'w') do |f|
         f.write content
       end
       new_issue_id
     end
     
     def issue_get(id)
-      issue_file = "#{@issues_folder}/#{id}"
-      raise IssueIdNotExistentException.new if !File.exists?(issue_file)
-      open(issue_file) do |f|
+      raise IssueIdNotExistentException.new if !issue_exists?(id)
+      open(issue_file(id)) do |f|
         return f.read
       end
     end
     
     def issue_edit(id, new_content)
-      issue_file = "#{@issues_folder}/#{id}"
-      raise IssueIdNotExistentException.new if !File.exists?(issue_file)
-      open(issue_file, 'w') do |f|
+      raise IssueIdNotExistentException.new if !issue_exists?(id)
+      open(issue_file(id), 'w') do |f|
         return f.write new_content
       end
     end
     
     def issue_del(id)
-      issue_file = "#{@issues_folder}/#{id}"
-      raise IssueIdNotExistentException.new if !File.exists?(issue_file)
-      FileUtils.rm issue_file
+      raise IssueIdNotExistentException.new if !issue_exists?(id)
+      FileUtils.rm issue_file(id)
+    end
+    
+    def issue_exists?(id)
+      File.exists?(issue_file(id))
     end
     
     def ui_start
@@ -69,6 +69,10 @@ module Ditado
     end
     
     private
+    def issue_file(id)
+      issue_file = "#{@issues_folder}/#{id}"
+    end
+    
     def diffstamp
        Time.now.to_s
     end
