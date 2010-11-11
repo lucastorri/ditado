@@ -230,3 +230,11 @@ describe Ditado, 'when working with issues' do
   end
   
 end
+
+describe Ditado, 'when using UI' do
+  
+  it 'starts the web client when receive the ui start command' do
+    
+  end
+  
+end
