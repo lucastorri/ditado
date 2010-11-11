@@ -14,4 +14,7 @@ module Ditado
   class IssueIDAlreadyExistentException < DitadoException
   end
   
+  class DitadoNotInitializedException < DitadoException
+  end
+  
 end

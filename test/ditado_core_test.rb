@@ -1,24 +1,48 @@
 require File.expand_path(File.dirname(__FILE__) + '/ditado_test_helper')
 
-describe Ditado::Core, 'when ditado is initted on a given folder where' do
+describe Ditado::Core, 'when ditado is instaciated' do
   
   before(:each) do
-    teardown_environment
+    setup_environment
+  end
+
+  it 'should set a global flag with the ditado folder' do
+    (defined? $DITADO_REPO).should be_false
+    begin 
+      FileUtils.mkdir DITADO_FILES_FOLDER
+    rescue Exception
+    end
     @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
+    $DITADO_REPO.should == DITADO_TEST_ENVIRONMENT
+  end
+
+  it 'should check if ditado was not previously initialized on the given path' do
+    begin
+      @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
+      fail
+    rescue Ditado::DitadoNotInitializedException => e
+    end
+  end
+
+end
+
+describe Ditado::Core, 'when ditado is initialized on a given folder where' do
+  
+  before(:each) do
     setup_environment
   end
   
-  context 'ditado was not initted' do
+  context 'ditado was not initialized before' do
   
     it 'should create a .ditado folder' do
       (File.exists? DITADO_FILES_FOLDER).should be_false
-      @ditado.init
+      Ditado::Core.init(DITADO_TEST_ENVIRONMENT).should_not be_nil
       (File.directory?DITADO_FILES_FOLDER).should be_true
     end
   
     it 'should create a project details file' do
       (File.exists? DITADO_PROJECT_DESCRIPTION_FILE).should be_false
-      @ditado.init
+      Ditado::Core.init(DITADO_TEST_ENVIRONMENT).should_not be_nil
       (File.file? DITADO_PROJECT_DESCRIPTION_FILE).should be_true
       
       open(DITADO_PROJECT_DESCRIPTION_FILE) do |f|
@@ -29,7 +53,7 @@ describe Ditado::Core, 'when ditado is initted on a given folder where' do
     it 'should create a wiki folder' do
       (File.exists? DITADO_WIKI_FOLDER).should be_false
       (File.exists? DITADO_WIKI_HOME_FILE).should be_false
-      @ditado.init
+      Ditado::Core.init(DITADO_TEST_ENVIRONMENT).should_not be_nil
       (File.directory?DITADO_WIKI_FOLDER).should be_true
       (File.file? DITADO_WIKI_HOME_FILE).should be_true
       open(DITADO_WIKI_HOME_FILE) do |f|
@@ -39,13 +63,13 @@ describe Ditado::Core, 'when ditado is initted on a given folder where' do
     
     it 'should create a issues folder' do
       (File.exists? DITADO_ISSUES_FOLDER).should be_false
-      @ditado.init
+      Ditado::Core.init(DITADO_TEST_ENVIRONMENT).should_not be_nil
       (File.directory?DITADO_ISSUES_FOLDER).should be_true
     end
   
   end
   
-  context 'ditado was already innited' do
+  context 'ditado was already initialized' do
   
     before(:each) do
       begin 
@@ -58,7 +82,7 @@ describe Ditado::Core, 'when ditado is initted on a given folder where' do
       (File.exists? DITADO_FILES_FOLDER).should be_true
       files_before = Dir.new(DITADO_FILES_FOLDER).entries
       begin
-        @ditado.init
+        Ditado::Core.init DITADO_TEST_ENVIRONMENT
         fail
       rescue Ditado::DitadoAlreadyInittedException => e
       end
@@ -75,18 +99,9 @@ end
 
 describe Ditado, 'when working with issues' do
   
-  TIME_NOW = '2010-11-10 21:44:44 -0200'
-  ISSUE_CONTENT_1 = 'This software does not work.'
-  ISSUE_CONTENT_1_SHA1 = '557697b22fadce5e580b85eec520d8d3e67d1da3'
-  ISSUE_CONTENT_1_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_1_SHA1}"
-  ISSUE_CONTENT_2 = 'It is still not working, dam you!'
-  ISSUE_CONTENT_2_SHA1 = '4a5f26421fcc2d1d92174b920ef4729a05858254'
-  ISSUE_CONTENT_2_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_2_SHA1}"
-  
   before(:each) do
     setup_environment
-    @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
-    @ditado.init
+    @ditado = Ditado::Core.init DITADO_TEST_ENVIRONMENT
   end
   
   context 'and creating issues' do

@@ -8,18 +8,38 @@ describe Ditado::Core, 'when using UI' do
     Ditado::WebClient
   end
   
-  before(:all) do
+  before(:each) do
     setup_environment
-    @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
-    @ditado.init
+    @ditado = Ditado::Core.init DITADO_TEST_ENVIRONMENT
   end
   
-  it 'starts the web client when receive the ui start command' do
+  it 'should provide a index page' do
     get '/'
     last_response.should be_ok
+    last_response.body.should == 'Hello World!'
+  end
+  
+  it 'should have a issues page' do
+    get '/issues'
+    last_response.should be_ok
+    last_response.body.should == 'Issues:'
+  end
+  
+  it 'should have a page for each issue' do
+    issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
+    issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
+    
+    get "/issues/#{issue_id_1}"
+    last_response.should be_ok
+    last_response.body.should == ISSUE_CONTENT_1
+
+    get "/issues/#{issue_id_2}"
+    last_response.should be_ok
+    last_response.body.should == ISSUE_CONTENT_2
   end
   
   after(:all) do
     teardown_environment
   end
+  
 end

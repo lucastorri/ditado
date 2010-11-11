@@ -19,14 +19,17 @@ module Ditado
   class Core
   
     def initialize(repo_path)
-      @repo_path = repo_path
-      @ditado_folder = "#{@repo_path}/#{REPO_FOLDER_NAME}"
+      @repo_path = $DITADO_REPO = repo_path
+      @ditado_folder = "#{repo_path}/#{REPO_FOLDER_NAME}"
+      raise DitadoNotInitializedException.new if !File.exists?(@ditado_folder)
       @issues_folder = "#{@ditado_folder}/#{ISSUES_FOLDER_NAME}"
     end
   
-    def init
-      raise DitadoAlreadyInittedException.new if File.exists?(@ditado_folder)
-      FileUtils.cp_r(SKELETON_FOLDER, @ditado_folder)
+    def self.init(repo_path)
+      ditado_folder = "#{repo_path}/#{REPO_FOLDER_NAME}"
+      raise DitadoAlreadyInittedException.new if File.exists?(ditado_folder)
+      FileUtils.cp_r(SKELETON_FOLDER, ditado_folder)
+      Core.new(repo_path)
     end
     
     def issue_add(content)
