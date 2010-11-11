@@ -1,10 +1,59 @@
-#!/usb/bin/env ruby
+#!/usr/bin/env ruby
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_core')
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_web_client')
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_exceptions')
 
-if ARGV[0] == 'init' then
-  new_ditado_dir = Dir.pwd
-  if ARGV[1] and ARGV[1].start_with? '/'
-    new_ditado_dir = ARGV[1]
+puts
+puts "+--------------------+"
+puts "| Welcome to DITado! |"
+puts "+--------------------+"
+puts
+
+case ARGV[0]
+  when 'init'
+    new_ditado_repo = Dir.pwd
+    Ditado::Core.init new_ditado_repo
+
+  when 'issue'
+    ditado = Ditado::Core.new Dir.pwd
+    case ARGV[1]
+      when 'add'
+        if ARGV[2].nil?
+          puts "Too few arguments"
+          exit
+        end
+        puts ditado.issue_add ARGV[2..-1].join(' ')
+        
+      when 'del'
+        if ARGV[2].nil?
+          puts "Too few arguments"
+          exit
+        end
+        ditado.issue_del ARGV[2]
+        
+      when 'edit'
+        if ARGV[2].nil? or ARGV[3].nil? 
+          puts "Too few arguments"
+          exit
+        end
+        ditado.issue_edit(ARGV[2], ARGV[3..-1].join(' '))
+        
+      when 'get'
+        if ARGV[2].nil?
+          puts "Too few arguments"
+          exit
+        end
+        puts "#{ARGV[2]} content is:"
+        puts '============================================'
+        puts ditado.issue_get(ARGV[2])
+        puts '============================================'
+        
+      when 'list'
+
+      else
+        puts "Too few arguments"
+    end
+    
   else
-    new_ditado_dir += ARGV[1]
-  end
+    puts 'Command unrecognized'
 end

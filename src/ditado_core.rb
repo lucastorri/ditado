@@ -51,7 +51,7 @@ module Ditado
     def issue_edit(id, new_content)
       raise IssueIdNotExistentException.new if !issue_exists?(id)
       open(issue_file(id), 'w') do |f|
-        return f.write new_content
+        f.write new_content
       end
     end
     
