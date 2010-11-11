@@ -32,17 +32,17 @@ describe Ditado, 'when ditado is initted on a given folder where' do
     setup_environment
   end
   
-  context 'ditado not initted' do
+  context 'ditado was not initted' do
   
     it 'should create a .ditado folder' do
       (File.exists? DITADO_FILES_FOLDER).should be_false
-      @ditado.init.should be_true
+      @ditado.init
       (File.directory?DITADO_FILES_FOLDER).should be_true
     end
   
     it 'should create a project details file' do
       (File.exists? DITADO_PROJECT_DESCRIPTION_FILE).should be_false
-      @ditado.init.should be_true
+      @ditado.init
       (File.file? DITADO_PROJECT_DESCRIPTION_FILE).should be_true
       
       open(DITADO_PROJECT_DESCRIPTION_FILE) do |f|
@@ -53,7 +53,7 @@ describe Ditado, 'when ditado is initted on a given folder where' do
     it 'should create a wiki folder' do
       (File.exists? DITADO_WIKI_FOLDER).should be_false
       (File.exists? DITADO_WIKI_HOME_FILE).should be_false
-      @ditado.init.should be_true
+      @ditado.init
       (File.directory?DITADO_WIKI_FOLDER).should be_true
       (File.file? DITADO_WIKI_HOME_FILE).should be_true
       open(DITADO_WIKI_HOME_FILE) do |f|
@@ -63,13 +63,13 @@ describe Ditado, 'when ditado is initted on a given folder where' do
     
     it 'should create a issues folder' do
       (File.exists? DITADO_ISSUES_FOLDER).should be_false
-      @ditado.init.should be_true
+      @ditado.init
       (File.directory?DITADO_ISSUES_FOLDER).should be_true
     end
   
   end
   
-  context 'ditado already innited' do
+  context 'ditado was already innited' do
   
     before(:each) do
       begin 
@@ -81,7 +81,11 @@ describe Ditado, 'when ditado is initted on a given folder where' do
     it 'should not modify anything' do
       (File.exists? DITADO_FILES_FOLDER).should be_true
       files_before = Dir.new(DITADO_FILES_FOLDER).entries
-      @ditado.init.should be_false
+      begin
+        @ditado.init
+        fail
+      rescue Ditado::DitadoAlreadyInittedException => e
+      end
       files_before.should == Dir.new(DITADO_FILES_FOLDER).entries
     end
     

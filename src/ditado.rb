@@ -15,6 +15,9 @@ module Ditado
   class DitadoException < Exception
   end
   
+  class DitadoAlreadyInittedException < DitadoException
+  end
+  
   class IssueIdNotExistentException < DitadoException
   end
   
@@ -30,13 +33,8 @@ module Ditado
     end
   
     def init
-      begin
-        throw Exception.new('Folder already exists') if File.exists? @ditado_folder
-        FileUtils.cp_r(SKELETON_FOLDER, @ditado_folder)
-        return true
-      rescue
-        return false
-      end
+      raise DitadoAlreadyInittedException.new if File.exists?(@ditado_folder)
+      FileUtils.cp_r(SKELETON_FOLDER, @ditado_folder)
     end
     
     def issue_add(content)
