@@ -4,7 +4,8 @@ require 'FileUtils'
 require 'date'
 require 'digest/sha1'
 require 'rack/test'
-require File.expand_path(File.dirname(__FILE__) + '/../src/ditado')
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_core')
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_web_client')
 
 DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
 DITADO_FILES_FOLDER = DITADO_TEST_ENVIRONMENT + '/.ditado'
@@ -94,7 +95,7 @@ describe Ditado, 'when ditado is initted on a given folder where' do
     
   end
   
-  after(:each) do
+  after(:all) do
     teardown_environment
   end
   
@@ -251,5 +252,9 @@ describe Ditado, 'when using UI' do
   it 'starts the web client when receive the ui start command' do
     get '/'
     last_response.should be_ok
+  end
+  
+  after(:all) do
+    teardown_environment
   end
 end

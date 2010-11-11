@@ -83,11 +83,5 @@ module Ditado
     end
   
   end
-  
-  class DitadoWebClient < Sinatra::Base
-    get '/' do
-      'Hello World!'
-    end
-  end
 
 end
