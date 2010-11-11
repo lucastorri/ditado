@@ -60,6 +60,10 @@ module Ditado
       FileUtils.rm issue_file(id)
     end
     
+    def issue_list
+      Dir.new(@issues_folder).entries - ['.', '..']
+    end
+    
     def issue_exists?(id)
       File.exists?(issue_file(id))
     end

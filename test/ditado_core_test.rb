@@ -171,6 +171,16 @@ describe Ditado, 'when working with issues' do
       rescue Ditado::IssueIdNotExistentException => e
       end
     end
+    
+    it 'should be able to list all existent issues' do
+      @ditado.issue_list.empty?.should be_true
+       
+      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
+      @ditado.issue_list.should == [issue_id_1]
+       
+      issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
+      (@ditado.issue_list - [issue_id_1, issue_id_2]).any?.should be_false
+    end
   
   end
   
