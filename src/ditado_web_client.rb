@@ -26,6 +26,10 @@ module Ditado
       erb :issues
     end
     
+    get '/issues_new' do
+      erb :new
+    end
+    
     post '/issues' do
       new_issue_id = @ditado.issue_add(params[:content])
       redirect "/issues/#{new_issue_id}"
@@ -33,6 +37,7 @@ module Ditado
     
     before '/issues/:id' do
       halt not_found if !@ditado.issue_exists?(params[:id])
+      
     end
     
     get '/issues/:id' do

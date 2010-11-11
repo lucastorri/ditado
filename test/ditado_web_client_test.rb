@@ -56,6 +56,11 @@ describe Ditado::Core, 'when using UI' do
     last_response.should be_not_found
   end
   
+  it 'should have a page to add new issues' do
+    get '/issues/new'
+    last_response.should be_ok
+  end
+  
   it 'should not be able to remove a inexistent issue' do
     delete '/issues/00'
     last_response.should be_not_found

@@ -7,9 +7,6 @@
 			<li><p><%= "<a href='/issues/#{issue}'>#{issue}</a>" %></p></li>
 			<% end %>
 		</ul>
-		<form action='/issues' method='post'>
-			<input type='text' name='content'/>
-			<button type="summit">Add</button>
-		</form>
+		<a href='/issues_new'>New Issue</a>
 	</body>
 </html>
