@@ -93,12 +93,13 @@ end
 
 describe Ditado, 'when working with issues' do
   
-  ISSUE_MESSAGE_1 = 'This software does not work.'
-  ISSUE_MESSAGE_1_SHA1 = '53863f107a09de9df9d6a947d710631cc2b7dadf'
-  ISSUE_MESSAGE_1_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_1_SHA1}"
-  ISSUE_MESSAGE_2 = 'It is still not working, dam you!'
-  ISSUE_MESSAGE_2_SHA1 = 'd8285e8384b6a4dac9f9da79fdd85f3bbf214dec'
-  ISSUE_MESSAGE_2_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_MESSAGE_2_SHA1}"
+  TIME_NOW = '2010-11-10 21:44:44 -0200'
+  ISSUE_CONTENT_1 = 'This software does not work.'
+  ISSUE_CONTENT_1_SHA1 = '557697b22fadce5e580b85eec520d8d3e67d1da3'
+  ISSUE_CONTENT_1_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_1_SHA1}"
+  ISSUE_CONTENT_2 = 'It is still not working, dam you!'
+  ISSUE_CONTENT_2_SHA1 = '4a5f26421fcc2d1d92174b920ef4729a05858254'
+  ISSUE_CONTENT_2_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_2_SHA1}"
   
   before(:each) do
     setup_environment
@@ -110,21 +111,29 @@ describe Ditado, 'when working with issues' do
   
   context 'and creating issues' do
     
-    it 'should set the issue ids as SHA1 hash keys from the issue message' do
-      @ditado.issue_add(ISSUE_MESSAGE_1).should == ISSUE_MESSAGE_1_SHA1
-      @ditado.issue_add(ISSUE_MESSAGE_2).should == ISSUE_MESSAGE_2_SHA1
+    before(:each) do
+      class Time
+        def self.now
+          return TIME_NOW
+        end
+      end
+    end
+    
+    it 'should set the issue id as the SHA1 hash from the issue content plus the current time' do
+      @ditado.issue_add(ISSUE_CONTENT_1).should == ISSUE_CONTENT_1_SHA1
+      @ditado.issue_add(ISSUE_CONTENT_2).should == ISSUE_CONTENT_2_SHA1
     end
     
     it 'should be able to add and persist new issues' do
-      issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
-      issue_id_2 = @ditado.issue_add ISSUE_MESSAGE_2
+      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
+      issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
 
-      open(ISSUE_MESSAGE_1_FILE) do |f|
-        f.read.should == ISSUE_MESSAGE_1
+      open(ISSUE_CONTENT_1_FILE) do |f|
+        f.read.should == ISSUE_CONTENT_1
       end
 
-      open(ISSUE_MESSAGE_2_FILE) do |f|
-        f.read.should == ISSUE_MESSAGE_2
+      open(ISSUE_CONTENT_2_FILE) do |f|
+        f.read.should == ISSUE_CONTENT_2
       end    
     end
     
@@ -133,11 +142,11 @@ describe Ditado, 'when working with issues' do
   context 'and retrieving issues' do
   
     it 'should be able to retrieve existent issues' do
-      issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
-      issue_id_2 = @ditado.issue_add ISSUE_MESSAGE_2
+      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
+      issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
     
-      @ditado.issue_get(issue_id_1).should == ISSUE_MESSAGE_1
-      @ditado.issue_get(issue_id_2).should == ISSUE_MESSAGE_2
+      @ditado.issue_get(issue_id_1).should == ISSUE_CONTENT_1
+      @ditado.issue_get(issue_id_2).should == ISSUE_CONTENT_2
     end
     
     it 'should return nil when the issue does not exist' do
@@ -153,9 +162,9 @@ describe Ditado, 'when working with issues' do
     end
   
     it 'should be able to remove an existent issue' do
-      issue_id_1 = @ditado.issue_add ISSUE_MESSAGE_1
+      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
       @ditado.issue_del(issue_id_1).should be_true
-      File.exists?(ISSUE_MESSAGE_1_FILE).should be_false
+      File.exists?(ISSUE_CONTENT_1_FILE).should be_false
     end
   
   end

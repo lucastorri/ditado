@@ -30,10 +30,10 @@ module Ditado
       end
     end
     
-    def issue_add(msg)
-      new_issue_id = Digest::SHA1.hexdigest(msg)
+    def issue_add(content)
+      new_issue_id = Digest::SHA1.hexdigest(content)
       open("#{@issues_folder}/#{new_issue_id}", 'w') do |f|
-        f.write msg
+        f.write content
       end
       new_issue_id
     end
