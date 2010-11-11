@@ -140,7 +140,11 @@ describe Ditado, 'when working with issues' do
         content_before = f.read
       end
       
-      @ditado.issue_add(ISSUE_CONTENT_1).should == ''
+      begin
+        @ditado.issue_add(ISSUE_CONTENT_1)
+        fail
+      rescue Ditado::IssueIDAlreadyExistentException => e
+      end
       open(ISSUE_CONTENT_1_FILE) do |f|
         f.read.should == content_before
       end
@@ -158,21 +162,29 @@ describe Ditado, 'when working with issues' do
       @ditado.issue_get(issue_id_2).should == ISSUE_CONTENT_2
     end
     
-    it 'should return nil when the issue does not exist' do
-      @ditado.issue_get('00').should be_nil
+    it 'should not retrieve anything when the issue does not exist' do
+      begin
+        @ditado.issue_get('00')
+        fail
+      rescue Ditado::IssueIdNotExistentException => e
+      end
     end
   
   end
   
   context 'and removing issues' do
   
-    it 'should return false when the issue does not exist' do
-      @ditado.issue_del('00').should be_false
+    it 'should return exception when the issue does not exist' do
+      begin
+        @ditado.issue_del('00')
+        fail
+      rescue Ditado::IssueIdNotExistentException => e
+      end
     end
   
     it 'should be able to remove an existent issue' do
       issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
-      @ditado.issue_del(issue_id_1).should be_true
+      @ditado.issue_del(issue_id_1)
       File.exists?(ISSUE_CONTENT_1_FILE).should be_false
     end
   
@@ -193,14 +205,18 @@ describe Ditado, 'when working with issues' do
         content_before = f.read
       end
       
-      @ditado.issue_edit(ISSUE_CONTENT_1_SHA1, NEW_ISSUE_CONTENT_1).should be_true
+      @ditado.issue_edit(ISSUE_CONTENT_1_SHA1, NEW_ISSUE_CONTENT_1)
       open(ISSUE_CONTENT_1_FILE) do |f|
         f.read.should == NEW_ISSUE_CONTENT_1
       end
     end
     
     it 'should not be able to edit an inexistent issue' do
-      @ditado.issue_edit('00', NEW_ISSUE_CONTENT_1).should be_false
+      begin
+        @ditado.issue_edit('00', NEW_ISSUE_CONTENT_1)
+        fail
+      rescue Ditado::IssueIdNotExistentException => e
+      end
     end
     
   end
