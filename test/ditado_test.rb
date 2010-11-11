@@ -99,7 +99,7 @@ end
 
 describe Ditado, 'when working with issues' do
   
-#  TIME_NOW = 
+  TIME_NOW = '2010-11-10 21:44:44 -0200'
   ISSUE_CONTENT_1 = 'This software does not work.'
   ISSUE_CONTENT_1_SHA1 = '557697b22fadce5e580b85eec520d8d3e67d1da3'
   ISSUE_CONTENT_1_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_1_SHA1}"
@@ -116,7 +116,7 @@ describe Ditado, 'when working with issues' do
   context 'and creating issues' do
     
     before(:each) do
-      @ditado.stub!(:diffstamp).and_return('2010-11-10 21:44:44 -0200')
+      @ditado.stub!(:diffstamp).and_return(TIME_NOW)
     end
     
     it 'should set the issue id as the SHA1 hash from the issue content plus the current time' do
