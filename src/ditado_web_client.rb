@@ -3,7 +3,7 @@ require 'sinatra/base'
 
 module Ditado
   
-  class DitadoWebClient < Sinatra::Base
+  class WebClient < Sinatra::Base
     get '/' do
       'Hello World!'
     end

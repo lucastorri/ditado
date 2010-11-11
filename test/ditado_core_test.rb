@@ -1,39 +1,10 @@
-require 'rubygems'
-require 'rspec'
-require 'FileUtils'
-require 'date'
-require 'digest/sha1'
-require 'rack/test'
-require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_core')
-require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_web_client')
-require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_exceptions')
+require File.expand_path(File.dirname(__FILE__) + '/ditado_test_helper')
 
-DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
-DITADO_FILES_FOLDER = DITADO_TEST_ENVIRONMENT + '/.ditado'
-DITADO_PROJECT_DESCRIPTION_FILE = DITADO_FILES_FOLDER + '/project'
-DITADO_WIKI_FOLDER = DITADO_FILES_FOLDER + '/wiki'
-DITADO_WIKI_HOME_FILE = DITADO_WIKI_FOLDER + '/index'
-DITADO_ISSUES_FOLDER = DITADO_FILES_FOLDER + '/issues'
-
-def setup_environment
-  begin 
-    FileUtils.mkdir DITADO_TEST_ENVIRONMENT
-  rescue Exception
-  end
-end
-
-def teardown_environment
-  begin
-    FileUtils.rm_rf DITADO_TEST_ENVIRONMENT
-  rescue Exception
-  end
-end
-
-describe Ditado, 'when ditado is initted on a given folder where' do
+describe Ditado::Core, 'when ditado is initted on a given folder where' do
   
   before(:each) do
     teardown_environment
-    @ditado = Ditado::Ditado.new DITADO_TEST_ENVIRONMENT
+    @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
     setup_environment
   end
   
@@ -114,7 +85,7 @@ describe Ditado, 'when working with issues' do
   
   before(:each) do
     setup_environment
-    @ditado = Ditado::Ditado.new DITADO_TEST_ENVIRONMENT
+    @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
     @ditado.init
   end
   
@@ -234,28 +205,4 @@ describe Ditado, 'when working with issues' do
     teardown_environment
   end
   
-end
-
-describe Ditado, 'when using UI' do
-  
-  include Rack::Test::Methods
-
-  def app
-    Ditado::DitadoWebClient
-  end
-  
-  before(:all) do
-    setup_environment
-    @ditado = Ditado::Ditado.new DITADO_TEST_ENVIRONMENT
-    @ditado.init
-  end
-  
-  it 'starts the web client when receive the ui start command' do
-    get '/'
-    last_response.should be_ok
-  end
-  
-  after(:all) do
-    teardown_environment
-  end
 end

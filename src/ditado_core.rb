@@ -16,7 +16,7 @@ module Ditado
   WIKI_HOME_FILE = 'index'
   ISSUES_FOLDER_NAME = 'issues'
 
-  class Ditado
+  class Core
   
     def initialize(repo_path)
       @repo_path = repo_path
