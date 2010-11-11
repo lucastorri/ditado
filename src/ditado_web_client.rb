@@ -37,6 +37,12 @@ module Ditado
       ditado.issue_get params[:id]
     end
     
+    put '/issues/:id' do
+      return unless issue_id_valid params[:id]
+      ditado.issue_edit params[:id], request.body.read
+      redirect request.path
+    end
+    
     delete '/issues/:id' do
       return unless issue_id_valid params[:id]
       ditado.issue_del params[:id]

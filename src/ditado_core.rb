@@ -50,11 +50,11 @@ module Ditado
       end
     end
     
-    def issue_edit(id, content)
+    def issue_edit(id, new_content)
       issue_file = "#{@issues_folder}/#{id}"
       raise IssueIdNotExistentException.new if !File.exists?(issue_file)
       open(issue_file, 'w') do |f|
-        return f.write content
+        return f.write new_content
       end
     end
     
