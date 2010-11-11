@@ -1,8 +1,10 @@
+require 'rubygems'
 require 'rspec'
 require 'FileUtils'
 require 'date'
 require 'digest/sha1'
-require File.expand_path(File.dirname(__FILE__) + '/../src/ditado.rb')
+require 'rack/test'
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado')
 
 DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
 DITADO_FILES_FOLDER = DITADO_TEST_ENVIRONMENT + '/.ditado'
@@ -28,6 +30,7 @@ end
 describe Ditado, 'when ditado is initted on a given folder where' do
   
   before(:each) do
+    teardown_environment
     @ditado = Ditado::Ditado.new DITADO_TEST_ENVIRONMENT
     setup_environment
   end
@@ -233,8 +236,20 @@ end
 
 describe Ditado, 'when using UI' do
   
-  it 'starts the web client when receive the ui start command' do
-    
+  include Rack::Test::Methods
+
+  def app
+    Ditado::DitadoWebClient
   end
   
+  before(:all) do
+    setup_environment
+    @ditado = Ditado::Ditado.new DITADO_TEST_ENVIRONMENT
+    @ditado.init
+  end
+  
+  it 'starts the web client when receive the ui start command' do
+    get '/'
+    last_response.should be_ok
+  end
 end

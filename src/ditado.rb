@@ -1,10 +1,14 @@
+require 'rubygems'
 require 'FileUtils'
 require 'digest/sha1'
+require 'sinatra/base'
 
 module Ditado
   
   RESOURCES_FOLDER = File.expand_path(File.dirname(__FILE__) + '/../res')
   SKELETON_FOLDER = RESOURCES_FOLDER + '/skeleton'
+  SERVER_SCOPE = 'localhost'
+  SERVER_PORT = 9317
 
   REPO_FOLDER_NAME = '.ditado'
   PROJECT_DESC_FILE = 'project'
@@ -69,11 +73,21 @@ module Ditado
       FileUtils.rm issue_file
     end
     
+    def ui_start
+      DitadoWebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
+    end
+    
     private
     def diffstamp
        Time.now.to_s
     end
   
+  end
+  
+  class DitadoWebClient < Sinatra::Base
+    get '/' do
+      'Hello World!'
+    end
   end
 
 end
