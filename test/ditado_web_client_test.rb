@@ -16,23 +16,20 @@ describe Ditado::Core, 'when using UI' do
   it 'should provide a index page' do
     get '/'
     last_response.should be_ok
-    last_response.body.should == 'Hello World!'
   end
   
   it 'should have a issues page' do
     get '/issues'
     last_response.should be_ok
-    last_response.body.should == 'Issues:'
   end
 
   it 'should be able to add an issue' do
-    post "/issues", ISSUE_CONTENT_1
+    post "/issues", :content => ISSUE_CONTENT_1
     last_response.should be_redirect
 
     follow_redirect!
     (last_request.path =~ /\/issues\/[\w\d]{40}/).should == 0
     last_response.should be_ok
-    last_response.body.should == ISSUE_CONTENT_1
   end
   
   it 'should have a page for each issue' do
@@ -41,11 +38,9 @@ describe Ditado::Core, 'when using UI' do
     
     get "/issues/#{issue_id_1}"
     last_response.should be_ok
-    last_response.body.should == ISSUE_CONTENT_1
 
     get "/issues/#{issue_id_2}"
     last_response.should be_ok
-    last_response.body.should == ISSUE_CONTENT_2
   end
   
   it 'should be able to remove a issue' do
@@ -55,7 +50,7 @@ describe Ditado::Core, 'when using UI' do
     last_response.should be_ok
     
     delete "/issues/#{issue_id_1}"
-    last_response.should be_ok
+    last_response.should be_redirect
     
     get "/issues/#{issue_id_1}"
     last_response.should be_not_found
@@ -76,7 +71,6 @@ describe Ditado::Core, 'when using UI' do
     follow_redirect!
     last_request.path.should == put_path
     last_response.should be_ok
-    last_response.body.should == ISSUE_CONTENT_2
   end
   
   it 'should not be able to edit a inexistent issue' do

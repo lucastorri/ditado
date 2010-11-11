@@ -1,0 +1,11 @@
+<html>
+	<title>Issue</title>
+	<body>
+		<h1><%= params[:id] %></h1>
+		<p><%= @issue %></p>
+		<%= "<form action='#{request.path}' method='post'>"%>
+			<input type="hidden" name="_method" value="delete" />
+			<button type="summit">Delete</button>
+		<%= "</form>" %>
+	</body>
+</html>
