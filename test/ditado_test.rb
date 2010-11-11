@@ -1,5 +1,7 @@
 require 'rspec'
 require 'FileUtils'
+require 'date'
+require 'digest/sha1'
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado.rb')
 
 DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'
@@ -93,7 +95,7 @@ end
 
 describe Ditado, 'when working with issues' do
   
-  TIME_NOW = '2010-11-10 21:44:44 -0200'
+#  TIME_NOW = 
   ISSUE_CONTENT_1 = 'This software does not work.'
   ISSUE_CONTENT_1_SHA1 = '557697b22fadce5e580b85eec520d8d3e67d1da3'
   ISSUE_CONTENT_1_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_1_SHA1}"
@@ -107,16 +109,10 @@ describe Ditado, 'when working with issues' do
     @ditado.init
   end
   
-  # ID must the hash of the file, otherwise will conflict in a distribute environment
-  
   context 'and creating issues' do
     
     before(:each) do
-      class Time
-        def self.now
-          return TIME_NOW
-        end
-      end
+      @ditado.stub!(:diffstamp).and_return('2010-11-10 21:44:44 -0200')
     end
     
     it 'should set the issue id as the SHA1 hash from the issue content plus the current time' do
@@ -135,6 +131,19 @@ describe Ditado, 'when working with issues' do
       open(ISSUE_CONTENT_2_FILE) do |f|
         f.read.should == ISSUE_CONTENT_2
       end    
+    end
+    
+    it 'should not be able to create issues with same key' do
+      @ditado.issue_add(ISSUE_CONTENT_1).should == ISSUE_CONTENT_1_SHA1
+      content_before = ''
+      open(ISSUE_CONTENT_1_FILE) do |f|
+        content_before = f.read
+      end
+      
+      @ditado.issue_add(ISSUE_CONTENT_1).should == ''
+      open(ISSUE_CONTENT_1_FILE) do |f|
+        f.read.should == content_before
+      end
     end
     
   end

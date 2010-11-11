@@ -31,9 +31,14 @@ module Ditado
     end
     
     def issue_add(content)
-      new_issue_id = Digest::SHA1.hexdigest(content)
-      open("#{@issues_folder}/#{new_issue_id}", 'w') do |f|
-        f.write content
+      new_issue_id = Digest::SHA1.hexdigest(content + diffstamp)
+      issue_file = "#{@issues_folder}/#{new_issue_id}"
+      if File.exists? issue_file then
+        new_issue_id = ''
+      else
+        open(issue_file, 'w') do |f|
+          f.write content
+        end
       end
       new_issue_id
     end
@@ -55,6 +60,10 @@ module Ditado
       else
         false
       end
+    end
+    
+    def diffstamp
+       Time.now.to_s
     end
   
   end
