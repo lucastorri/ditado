@@ -18,13 +18,13 @@ module Ditado
     end
     
     def issue_id_valid(id)
+      issue_content = nil
       begin
-        ditado.issue_get id
-        true
+        issue_content = ditado.issue_get id
       rescue IssueIdNotExistentException => e
         status 404
-        false
       end
+      !issue_content.nil?
     end
     
     get '/issues/:id' do
