@@ -2,6 +2,7 @@ require 'rubygems'
 require 'FileUtils'
 require 'digest/sha1'
 require 'sinatra/base'
+require 'babosa'
 
 module Ditado
   
@@ -23,6 +24,7 @@ module Ditado
       @ditado_folder = "#{repo_path}/#{REPO_FOLDER_NAME}"
       raise DitadoNotInitializedException.new if !File.exists?(@ditado_folder)
       @issues_folder = "#{@ditado_folder}/#{ISSUES_FOLDER_NAME}"
+      @wiki_folder = "#{@ditado_folder}/#{WIKI_FOLDER_NAME}"
     end
   
     def self.init(repo_path)
@@ -35,24 +37,18 @@ module Ditado
     def issue_add(content)
       new_issue_id = Digest::SHA1.hexdigest(content + diffstamp)
       raise IssueIDAlreadyExistentException.new if issue_exists?(new_issue_id)
-      open(issue_file(new_issue_id), 'w') do |f|
-        f.write content
-      end
+      write issue_file(new_issue_id), content
       new_issue_id
     end
     
     def issue_get(id)
       raise IssueIdNotExistentException.new if !issue_exists?(id)
-      open(issue_file(id)) do |f|
-        return f.read
-      end
+      read issue_file(id)
     end
     
     def issue_edit(id, new_content)
       raise IssueIdNotExistentException.new if !issue_exists?(id)
-      open(issue_file(id), 'w') do |f|
-        f.write new_content
-      end
+      write issue_file(id), new_content
     end
     
     def issue_del(id)
@@ -72,13 +68,41 @@ module Ditado
       Ditado::WebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
     end
     
+    def wiki_add(content)
+      new_page_id = content.split("\n")[0].to_slug.normalize.to_s
+      raise InvalidDitadoWikiPageNameException.new if new_page_id.strip == ''
+      raise DitadoWikiPageAlreadyExistsException.new if wiki_exists?(new_page_id)
+      write wiki_page(new_page_id), content
+      new_page_id
+    end
+    
+    def wiki_exists?(id)
+      File.exists?(wiki_page(id))
+    end
+    
     private
     def issue_file(id)
       issue_file = "#{@issues_folder}/#{id}"
     end
     
+    def wiki_page(id)
+      "#{@wiki_folder}/#{id}"
+    end
+    
     def diffstamp
        Time.now.to_s
+    end
+    
+    def read(file)
+      open(file) do |f|
+        return f.read
+      end
+    end
+    
+    def write(file, content)
+      open(file, 'w') do |f|
+        f.write content
+      end
     end
   
   end

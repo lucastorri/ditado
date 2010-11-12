@@ -24,7 +24,7 @@ module Ditado
       erb :index
     end
     
-    get '/issues' do
+    get '/issues/?' do
       @issues = @ditado.issue_list.inject([]) do |issues, issue_id|
         issues << [issue_id, to_hash(@ditado.issue_get(issue_id))[:title]]
       end
@@ -75,8 +75,8 @@ module Ditado
       Hpricot(xml).search('/issue/*').to_a.inject({}) { |content, elem| content[elem.name.to_sym] = elem.to_plain_text; content }
     end
     
-    get '/wiki' do
-      
+    get '/wiki/?  ' do
+      erb :wiki, :locals => { :text => textile(:introduction) }
     end
     
   end

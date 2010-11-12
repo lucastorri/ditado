@@ -23,6 +23,19 @@ ISSUE_CONTENT_2 = 'It is still not working, dam you!'
 ISSUE_CONTENT_2_SHA1 = '4a5f26421fcc2d1d92174b920ef4729a05858254'
 ISSUE_CONTENT_2_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_2_SHA1}"
 
+WIKI_PAGE_CONTENT_1 = %q{Welcome...
+
+...to DITado!
+}
+WIKI_PAGE_CONTENT_1_ID = 'welcome'
+WIKI_PAGE_CONTENT_1_FILE = "#{DITADO_WIKI_FOLDER}/#{WIKI_PAGE_CONTENT_1_ID}"
+WIKI_PAGE_CONTENT_2 = %q{Welcome to this **new** page!
+
+and the text goes on... 
+}
+WIKI_PAGE_CONTENT_2_ID = 'welcome-to-this-new-page'
+WIKI_PAGE_CONTENT_2_FILE = "#{DITADO_WIKI_FOLDER}/#{WIKI_PAGE_CONTENT_2_ID}"
+
 def setup_environment
   teardown_environment
   begin 
@@ -35,5 +48,13 @@ def teardown_environment
   begin
     FileUtils.rm_rf DITADO_TEST_ENVIRONMENT
   rescue Exception
+  end
+end
+
+def must_throw_a(exception_class, &code)
+  begin
+    code.call
+    fail
+  rescue exception_class => e
   end
 end

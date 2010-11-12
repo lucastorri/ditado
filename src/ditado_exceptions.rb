@@ -17,4 +17,10 @@ module Ditado
   class DitadoNotInitializedException < DitadoException
   end
   
+  class DitadoWikiPageAlreadyExistsException < DitadoException
+  end
+  
+  class InvalidDitadoWikiPageNameException < DitadoException
+  end
+  
 end

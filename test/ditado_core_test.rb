@@ -57,7 +57,7 @@ describe Ditado::Core, 'when ditado is initialized on a given folder where' do
       (File.directory?DITADO_WIKI_FOLDER).should be_true
       (File.file? DITADO_WIKI_HOME_FILE).should be_true
       open(DITADO_WIKI_HOME_FILE) do |f|
-        f.read.should == 'Welcome!'
+        f.read.should == 'h1. Welcome!'
       end
     end
     
@@ -81,10 +81,8 @@ describe Ditado::Core, 'when ditado is initialized on a given folder where' do
     it 'should not modify anything' do
       (File.exists? DITADO_FILES_FOLDER).should be_true
       files_before = Dir.new(DITADO_FILES_FOLDER).entries
-      begin
+      must_throw_a Ditado::DitadoAlreadyInittedException do
         Ditado::Core.init DITADO_TEST_ENVIRONMENT
-        fail
-      rescue Ditado::DitadoAlreadyInittedException => e
       end
       files_before.should == Dir.new(DITADO_FILES_FOLDER).entries
     end
@@ -135,10 +133,8 @@ describe Ditado, 'when working with issues' do
         content_before = f.read
       end
       
-      begin
+      must_throw_a  Ditado::IssueIDAlreadyExistentException do
         @ditado.issue_add(ISSUE_CONTENT_1)
-        fail
-      rescue Ditado::IssueIDAlreadyExistentException => e
       end
       open(ISSUE_CONTENT_1_FILE) do |f|
         f.read.should == content_before
@@ -165,10 +161,8 @@ describe Ditado, 'when working with issues' do
     end
     
     it 'should not retrieve anything when the issue does not exist' do
-      begin
+      must_throw_a Ditado::IssueIdNotExistentException do
         @ditado.issue_get('00')
-        fail
-      rescue Ditado::IssueIdNotExistentException => e
       end
     end
     
@@ -187,10 +181,8 @@ describe Ditado, 'when working with issues' do
   context 'and removing issues' do
   
     it 'should return exception when the issue does not exist' do
-      begin
+      must_throw_a Ditado::IssueIdNotExistentException do
         @ditado.issue_del('00')
-        fail
-      rescue Ditado::IssueIdNotExistentException => e
       end
     end
   
@@ -224,10 +216,66 @@ describe Ditado, 'when working with issues' do
     end
     
     it 'should not be able to edit an inexistent issue' do
-      begin
+      must_throw_a Ditado::IssueIdNotExistentException do
         @ditado.issue_edit('00', NEW_ISSUE_CONTENT_1)
-        fail
-      rescue Ditado::IssueIdNotExistentException => e
+      end
+    end
+    
+  end
+  
+  after(:each) do
+    teardown_environment
+  end
+  
+end
+
+describe Ditado, 'when working with wiki pages' do
+  
+  before(:each) do
+    setup_environment
+    @ditado = Ditado::Core.init DITADO_TEST_ENVIRONMENT
+  end
+  
+  context 'and creating pages' do
+
+    it 'should use the slug title of the page as id' do
+      @ditado.wiki_add(WIKI_PAGE_CONTENT_1).should == WIKI_PAGE_CONTENT_1_ID
+      @ditado.wiki_add(WIKI_PAGE_CONTENT_2).should == WIKI_PAGE_CONTENT_2_ID
+    end
+    
+    it 'should use the first line of the new page contents as its title' do
+      must_throw_a Ditado::InvalidDitadoWikiPageNameException do
+        @ditado.wiki_add(" ")
+      end
+      
+      must_throw_a Ditado::InvalidDitadoWikiPageNameException do
+        @ditado.wiki_add('*-*')
+      end
+      
+      must_throw_a Ditado::InvalidDitadoWikiPageNameException do
+        @ditado.wiki_add(" \n")
+      end
+      
+      must_throw_a Ditado::InvalidDitadoWikiPageNameException do
+        @ditado.wiki_add(":)")
+      end
+      
+      @ditado.wiki_add('a').should == 'a'
+    end
+    
+    it 'should be able do add a new page' do
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_false
+      @ditado.wiki_add WIKI_PAGE_CONTENT_1
+      File.file?(WIKI_PAGE_CONTENT_1_FILE).should be_true
+      open(WIKI_PAGE_CONTENT_1_FILE) do |f|
+        f.read.should == WIKI_PAGE_CONTENT_1
+      end
+    end
+    
+    it 'should not be able to override an existent page' do
+      FileUtils.touch WIKI_PAGE_CONTENT_1_FILE
+      must_throw_a Ditado::DitadoWikiPageAlreadyExistsException do
+        @ditado.wiki_add WIKI_PAGE_CONTENT_1
       end
     end
     
