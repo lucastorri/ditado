@@ -13,6 +13,7 @@ module Ditado
     
     before do
       @ditado = ditado
+      params.delete '_method'
     end
     
     def ditado
@@ -24,6 +25,9 @@ module Ditado
     end
     
     get '/issues' do
+      @issues = @ditado.issue_list.inject([]) do |issues, issue_id|
+        issues << [issue_id, to_hash(@ditado.issue_get(issue_id))[:title]]
+      end
       erb :issues
     end
     
@@ -39,22 +43,23 @@ module Ditado
     
     before '/issues/:id' do
       halt not_found if !@ditado.issue_exists?(params[:id])
+      @id = params[:id]
+      params.delete :id
     end
     
     get '/issues/:id' do
-      @issue = to_hash @ditado.issue_get(params[:id])
+      @issue = to_hash @ditado.issue_get(@id)
       erb :issue
+      
     end
     
     put '/issues/:id' do
-      id = params[:id]
-      params.delete :id
-      @ditado.issue_edit id, to_xml(params)
+      @ditado.issue_edit @id, to_xml(params)
       redirect request.path
     end
     
     delete '/issues/:id' do
-      @ditado.issue_del params[:id]
+      @ditado.issue_del @id
       redirect '/issues'
     end
     

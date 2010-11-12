@@ -3,8 +3,8 @@
 	<body>
 		<h1>Existent Issues</h1>
 		<ul>
-			<% @ditado.issue_list.each do |issue| %>
-			<li><p><%= "<a href='/issues/#{issue}'>#{issue}</a>" %></p></li>
+			<% @issues.each do |issue| %>
+			<li><p><%= "<a href='/issues/#{issue[0]}'>#{issue[1]}</a>" %></p></li>
 			<% end %>
 		</ul>
 		<a href='/issues_new'>New Issue</a>
