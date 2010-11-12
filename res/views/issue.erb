@@ -1,6 +1,7 @@
 <html>
 	<title>Issue</title>
 	<body>
+		<p><a href='/issues' >« Issues</a></p>
 		<h1><%= params[:id] %></h1>
 		<%= "<form action='/issues/#{params[:id]}' method='post'>"%>
 			<input type="hidden" name="_method" value="put" />
