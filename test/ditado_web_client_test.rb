@@ -57,7 +57,7 @@ describe Ditado::Core, 'when using UI' do
   end
   
   it 'should have a page to add new issues' do
-    get '/issues/new'
+    get '/issues_new'
     last_response.should be_ok
   end
   
@@ -69,7 +69,7 @@ describe Ditado::Core, 'when using UI' do
   it 'should be able to edit a existent issue' do
     issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
     
-    put "/issues/#{issue_id_1}", ISSUE_CONTENT_2
+    put "/issues/#{issue_id_1}", :content => ISSUE_CONTENT_2
     put_path = last_request.path
     last_response.should be_redirect
     
