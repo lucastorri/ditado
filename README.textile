@@ -1,0 +1,12 @@
+h1. DITado
+
+Ditado is a distributed issue tracker and wiki (in the future) for developers using distributed version managers like Git or Hg.
+
+Add the bin folder to your path and then you can use the following commands (an their description):
+* ditado init (starts ditado on the current folder)
+* ditado issue add <issue content message> (add a new issue to the database)
+* ditado issue del <issueid> (remove an issue)
+* ditado issue get <issueid> (get the content of a issue)
+* ditado issue edit <issueid> <issue content message> (change the content of a issue)
+* ditado issue list (list all existent issues)
+* *ditado ui start* (_Prefer using this instead of the command line_. It starts the web client for DITado. You can find it on http://localhost:9317)
