@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra/base'
+require 'hpricot'
 
 module Ditado
   
@@ -31,28 +32,42 @@ module Ditado
     end
     
     post '/issues' do
-      new_issue_id = @ditado.issue_add(params[:content])
+      halt bad_request if params.empty?
+      new_issue_id = @ditado.issue_add(to_xml(params))
       redirect "/issues/#{new_issue_id}"
     end
     
     before '/issues/:id' do
       halt not_found if !@ditado.issue_exists?(params[:id])
-      
     end
     
     get '/issues/:id' do
-      @issue = @ditado.issue_get params[:id]
+      @issue = to_hash @ditado.issue_get(params[:id])
       erb :issue
     end
     
     put '/issues/:id' do
-      @ditado.issue_edit params[:id], request.body.read
+      id = params[:id]
+      params.delete :id
+      @ditado.issue_edit id, to_xml(params)
       redirect request.path
     end
     
     delete '/issues/:id' do
       @ditado.issue_del params[:id]
       redirect '/issues'
+    end
+    
+    def to_xml(params)
+      s = "<issue>\n"
+      params.each do |key, value|
+        s += "<#{key}>#{value}</#{key}>\n"
+      end
+      s += '</issue>'
+    end
+    
+    def to_hash(xml)
+      Hpricot(xml).search('/issue/*').to_a.inject({}) { |content, elem| content[elem.name.to_sym] = elem.to_plain_text; content }
     end
     
   end

@@ -2,7 +2,12 @@
 	<title>Issue</title>
 	<body>
 		<h1><%= params[:id] %></h1>
-		<p><%= @issue %></p>
+		<%= "<form action='/issues/#{params[:id]}' method='post'>"%>
+			<input type="hidden" name="_method" value="put" />
+			<p>Title: <%= "<input type='text' name='title' value='#{@issue[:title]}'>" %></p>
+			<p>Content: <textarea name="content" cols="40" rows="5"><%= @issue[:content] %></textarea></p>
+			<p><button type="summit">Save</button></p>
+		<%= "</form>" %>
 		<%= "<form action='#{request.path}' method='post'>"%>
 			<input type="hidden" name="_method" value="delete" />
 			<button type="summit">Delete</button>
