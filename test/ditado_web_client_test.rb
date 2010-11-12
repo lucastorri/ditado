@@ -83,6 +83,11 @@ describe Ditado::Core, 'when using UI' do
     last_response.should be_not_found
   end
   
+  it 'should have a wiki page' do
+    get '/wiki'
+    last_response.should be_ok
+  end
+  
   after(:all) do
     teardown_environment
   end

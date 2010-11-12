@@ -75,6 +75,10 @@ module Ditado
       Hpricot(xml).search('/issue/*').to_a.inject({}) { |content, elem| content[elem.name.to_sym] = elem.to_plain_text; content }
     end
     
+    get '/wiki' do
+      
+    end
+    
   end
   
 end
