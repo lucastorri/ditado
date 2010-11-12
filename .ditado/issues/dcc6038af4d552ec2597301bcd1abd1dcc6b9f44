@@ -1,0 +1,8 @@
+<issue>
+<title>Allow to change the fields used in the issues</title>
+<content>As a DITado User,
+I want to be able to change the default fields used to report a issue,
+So I can add or remove fields the way I want.
+
+ps.: add a configuration file in .ditado folder saying the fields for issues.</content>
+</issue>
