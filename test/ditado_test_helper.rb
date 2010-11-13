@@ -31,10 +31,18 @@ WIKI_PAGE_CONTENT_1_ID = 'welcome'
 WIKI_PAGE_CONTENT_1_FILE = "#{DITADO_WIKI_FOLDER}/#{WIKI_PAGE_CONTENT_1_ID}"
 WIKI_PAGE_CONTENT_2 = %q{Welcome to this **new** page!
 
-and the text goes on... 
+h2. and the text goes on... 
+# 1
+# 2
 }
 WIKI_PAGE_CONTENT_2_ID = 'welcome-to-this-new-page'
 WIKI_PAGE_CONTENT_2_FILE = "#{DITADO_WIKI_FOLDER}/#{WIKI_PAGE_CONTENT_2_ID}"
+WIKI_PAGE_CONTENT_2_AS_TEXTILE = %q{<h1>Welcome to this <b>new</b> page!</h1>
+<h2>and the text goes on&#8230;</h2>
+<ol>
+	<li>1</li>
+	<li>2</li>
+</ol>}
 
 def setup_environment
   teardown_environment
@@ -51,7 +59,7 @@ def teardown_environment
   end
 end
 
-def must_throw_a(exception_class, &code)
+def should_raise_a(exception_class, &code)
   begin
     code.call
     fail

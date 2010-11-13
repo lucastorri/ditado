@@ -3,6 +3,7 @@ require 'FileUtils'
 require 'digest/sha1'
 require 'sinatra/base'
 require 'babosa'
+require 'RedCloth'
 
 module Ditado
   
@@ -74,6 +75,15 @@ module Ditado
       raise DitadoWikiPageAlreadyExistsException.new if wiki_exists?(new_page_id)
       write wiki_page(new_page_id), content
       new_page_id
+    end
+    
+    def wiki_get(id)
+      raise DitadoWikiPageDoesNotExistException.new if not wiki_exists? id
+      read(wiki_page(id))
+    end
+    
+    def wiki_textile(id)
+      RedCloth.new('h1. ' + wiki_get(id)).to_html
     end
     
     def wiki_exists?(id)
