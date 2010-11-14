@@ -321,6 +321,48 @@ describe Ditado, 'when working with wiki pages' do
     
   end
   
+  context 'and editing pages' do
+    
+    before(:each) do
+      @ditado.wiki_add WIKI_PAGE_CONTENT_1
+    end
+    
+    it 'should be able to change the content of a page' do
+      new_content = WIKI_PAGE_CONTENT_1 + 'that is the new line'
+      @ditado.wiki_edit(WIKI_PAGE_CONTENT_1_ID, new_content).should == WIKI_PAGE_CONTENT_1_ID
+      open(WIKI_PAGE_CONTENT_1_FILE) do |f|
+        f.read.should == new_content
+      end
+    end
+    
+    it 'should be able to change the title of a page' do
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_true
+      new_content = "new title to the page\n" + WIKI_PAGE_CONTENT_1
+      @ditado.wiki_edit WIKI_PAGE_CONTENT_1_ID, new_content
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_false
+      new_file = "#{DITADO_WIKI_FOLDER}/new-title-to-the-page"
+      File.exists?(ISSUE_CONTENT_2_FILE = new_file).should be_true
+      open(new_file) do |f|
+        f.read.should == new_content
+      end
+    end
+    
+    it 'should not be able to use an invalid new title' do
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_true
+      new_content = ":)\n" + WIKI_PAGE_CONTENT_1
+      should_raise_a Ditado::InvalidDitadoWikiPageNameException do
+        @ditado.wiki_edit WIKI_PAGE_CONTENT_1_ID, new_content
+      end
+    end
+    
+    it 'should not be able to edit a inexistent page' do
+      should_raise_a Ditado::DitadoWikiPageDoesNotExistException do
+        @ditado.wiki_edit '00', WIKI_PAGE_CONTENT_1
+      end
+    end
+    
+  end
+  
   after(:each) do
     teardown_environment
   end

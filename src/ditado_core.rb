@@ -70,16 +70,16 @@ module Ditado
     end
     
     def wiki_add(content)
-      new_page_id = content.split("\n")[0].to_slug.normalize.to_s
+      new_page_id = wiki_page_id(content)
       raise InvalidDitadoWikiPageNameException.new if new_page_id.strip == ''
       raise DitadoWikiPageAlreadyExistsException.new if wiki_exists?(new_page_id)
-      write wiki_page(new_page_id), content
+      write wiki_page_file(new_page_id), content
       new_page_id
     end
     
     def wiki_get(id)
       raise DitadoWikiPageDoesNotExistException.new if not wiki_exists? id
-      read(wiki_page(id))
+      read(wiki_page_file(id))
     end
     
     def wiki_textile(id)
@@ -87,12 +87,23 @@ module Ditado
     end
     
     def wiki_exists?(id)
-      File.exists?(wiki_page(id))
+      File.exists?(wiki_page_file(id))
     end
     
     def wiki_del(id)
       raise DitadoWikiPageDoesNotExistException.new if not wiki_exists? id
-      FileUtils.rm wiki_page(id)
+      FileUtils.rm wiki_page_file(id)
+    end
+    
+    def wiki_edit(id, new_content)
+      if wiki_page_id(new_content) != id then
+        wiki_del(id)
+        wiki_add(new_content)
+      else
+        raise DitadoWikiPageDoesNotExistException.new if not wiki_exists? id
+        write wiki_page_file(id), new_content
+        id
+      end
     end
     
     private
@@ -100,8 +111,12 @@ module Ditado
       issue_file = "#{@issues_folder}/#{id}"
     end
     
-    def wiki_page(id)
+    def wiki_page_file(id)
       "#{@wiki_folder}/#{id}"
+    end
+    
+    def wiki_page_id(content)
+      content.split("\n")[0].to_slug.normalize.to_s
     end
     
     def diffstamp
