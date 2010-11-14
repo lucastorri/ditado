@@ -90,6 +90,11 @@ module Ditado
       File.exists?(wiki_page(id))
     end
     
+    def wiki_del(id)
+      raise DitadoWikiPageDoesNotExistException.new if not wiki_exists? id
+      FileUtils.rm wiki_page(id)
+    end
+    
     private
     def issue_file(id)
       issue_file = "#{@issues_folder}/#{id}"

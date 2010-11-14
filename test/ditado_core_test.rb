@@ -303,6 +303,24 @@ describe Ditado, 'when working with wiki pages' do
     
   end
   
+  context 'and removing pages' do
+    
+    it 'should be able to remove them' do
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_false
+      @ditado.wiki_add WIKI_PAGE_CONTENT_1
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_true
+      @ditado.wiki_del WIKI_PAGE_CONTENT_1_ID
+      File.exists?(WIKI_PAGE_CONTENT_1_FILE).should be_false
+    end
+    
+    it 'should not be able to remove an inexistent one' do
+      should_raise_a Ditado::DitadoWikiPageDoesNotExistException do
+        @ditado.wiki_del '00'
+      end
+    end
+    
+  end
+  
   after(:each) do
     teardown_environment
   end

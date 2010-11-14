@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/ditado_test_helper')
 
-describe Ditado::Core, 'when using UI' do
+describe Ditado::WebClient, 'when using UI' do
   
   include Rack::Test::Methods
 
@@ -86,6 +86,13 @@ describe Ditado::Core, 'when using UI' do
   it 'should have a wiki page' do
     get '/wiki'
     last_response.should be_ok
+  end
+  
+  it 'should parse textile files using the page paramenter' do
+    @ditado.wiki_add WIKI_PAGE_CONTENT_1
+    get '/wiki', :page => 'welcome'
+    last_response.should be_ok
+    (last_response.body =~ /<b>to DITado!<\/b>/).should_not be_nil
   end
   
   after(:all) do

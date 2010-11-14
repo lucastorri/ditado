@@ -1,0 +1,6 @@
+<issue>
+<title>Remove method wiki_textile from core</title>
+<content>As a DITado Developer,
+I want to remove the method wiki_textile from the core component,
+So I can remove view logic from it</content>
+</issue>
