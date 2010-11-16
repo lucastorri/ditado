@@ -15,6 +15,16 @@ describe Ditado::Core, 'when ditado is instaciated' do
     @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
     $DITADO_REPO.should == DITADO_TEST_ENVIRONMENT
   end
+  
+  it 'should know where is the repo and ditado folders' do
+    begin 
+      FileUtils.mkdir DITADO_FILES_FOLDER
+    rescue Exception
+    end
+    @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
+    @ditado.repo_path.should == DITADO_TEST_ENVIRONMENT
+    @ditado.folder.should == DITADO_FILES_FOLDER
+  end
 
   it 'should check if ditado was not previously initialized on the given path' do
     should_raise_a Ditado::DitadoNotInitializedException do
@@ -53,7 +63,7 @@ describe Ditado::Core, 'when ditado is instaciated' do
     should_raise_a NoMethodError do
       @ditado.test_call2
     end
-    Ditado::Core.register_module(Ditado::Module.new(TestModule, 'test', [:call1, :call2]))
+    Ditado::Core.register_module('test', TestModule)
     @ditado.test_call1.should be_true
     @ditado.test_call2.should be_true
   end
@@ -124,140 +134,6 @@ describe Ditado::Core, 'when ditado is initialized on a given folder where' do
   end
   
   after(:all) do
-    teardown_environment
-  end
-  
-end
-
-describe Ditado, 'when working with issues' do
-  
-  before(:each) do
-    setup_environment
-    @ditado = Ditado::Core.init DITADO_TEST_ENVIRONMENT
-  end
-  
-  context 'and creating issues' do
-    
-    before(:each) do
-      @ditado.stub!(:diffstamp).and_return(TIME_NOW)
-    end
-    
-    it 'should set the issue id as the SHA1 hash from the issue content plus the current time' do
-      @ditado.issue_add(ISSUE_CONTENT_1).should == ISSUE_CONTENT_1_SHA1
-      @ditado.issue_add(ISSUE_CONTENT_2).should == ISSUE_CONTENT_2_SHA1
-    end
-    
-    it 'should be able to add and persist new issues' do
-      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
-      issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
-
-      open(ISSUE_CONTENT_1_FILE) do |f|
-        f.read.should == ISSUE_CONTENT_1
-      end
-
-      open(ISSUE_CONTENT_2_FILE) do |f|
-        f.read.should == ISSUE_CONTENT_2
-      end    
-    end
-    
-    it 'should not be able to create issues with same key' do
-      @ditado.issue_add(ISSUE_CONTENT_1).should == ISSUE_CONTENT_1_SHA1
-      content_before = ''
-      open(ISSUE_CONTENT_1_FILE) do |f|
-        content_before = f.read
-      end
-      
-      should_raise_a  Ditado::IssueIDAlreadyExistentException do
-        @ditado.issue_add(ISSUE_CONTENT_1)
-      end
-      open(ISSUE_CONTENT_1_FILE) do |f|
-        f.read.should == content_before
-      end
-    end
-    
-    it 'should be able to identify if a issue exists' do
-      issue_id_1 = @ditado.issue_add(ISSUE_CONTENT_1)
-      @ditado.issue_exists?(issue_id_1).should be_true
-      
-      @ditado.issue_exists?('00').should be_false
-    end
-    
-  end
-  
-  context 'and retrieving issues' do
-  
-    it 'should be able to retrieve existent issues' do
-      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
-      issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
-    
-      @ditado.issue_get(issue_id_1).should == ISSUE_CONTENT_1
-      @ditado.issue_get(issue_id_2).should == ISSUE_CONTENT_2
-    end
-    
-    it 'should not retrieve anything when the issue does not exist' do
-      should_raise_a Ditado::IssueIdNotExistentException do
-        @ditado.issue_get('00')
-      end
-    end
-    
-    it 'should be able to list all existent issues' do
-      @ditado.issue_list.empty?.should be_true
-       
-      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
-      @ditado.issue_list.should == [issue_id_1]
-       
-      issue_id_2 = @ditado.issue_add ISSUE_CONTENT_2
-      (@ditado.issue_list - [issue_id_1, issue_id_2]).any?.should be_false
-    end
-  
-  end
-  
-  context 'and removing issues' do
-  
-    it 'should return exception when the issue does not exist' do
-      should_raise_a Ditado::IssueIdNotExistentException do
-        @ditado.issue_del('00')
-      end
-    end
-  
-    it 'should be able to remove an existent issue' do
-      issue_id_1 = @ditado.issue_add ISSUE_CONTENT_1
-      @ditado.issue_del(issue_id_1)
-      File.exists?(ISSUE_CONTENT_1_FILE).should be_false
-    end
-  
-  end
-  
-  context 'and editing issues' do
-    
-    NEW_ISSUE_CONTENT_1 = 'When are you going to fix this?'
-    
-    before(:each) do
-      @ditado.stub!(:diffstamp).and_return('2010-11-10 21:44:44 -0200')
-      @ditado.issue_add(ISSUE_CONTENT_1)
-    end
-    
-    it 'should be able to change the content of a issue' do
-      content_before = ''
-      open(ISSUE_CONTENT_1_FILE) do |f|
-        content_before = f.read
-      end
-      
-      @ditado.issue_edit(ISSUE_CONTENT_1_SHA1, NEW_ISSUE_CONTENT_1)
-      open(ISSUE_CONTENT_1_FILE) do |f|
-        f.read.should == NEW_ISSUE_CONTENT_1
-      end
-    end
-    
-    it 'should not be able to edit an inexistent issue' do
-      should_raise_a Ditado::IssueIdNotExistentException do
-        @ditado.issue_edit('00', NEW_ISSUE_CONTENT_1)
-      end
-    end
-    
-  end
-  
-  after(:each) do
     teardown_environment
   end
   

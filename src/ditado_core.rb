@@ -16,30 +16,17 @@ module Ditado
   PROJECT_DESC_FILE = 'project'
   WIKI_FOLDER_NAME = 'wiki'
   WIKI_HOME_FILE = 'index'
-  ISSUES_FOLDER_NAME = 'issues'
-  
-  class Module
-    
-    attr_accessor :module_class, :prefix, :methods
-    
-    def initialize(module_class, prefix, methods)
-      @module_class = module_class
-      @prefix = prefix
-      @methods = methods
-    end
-    
-  end
 
   class Core
     
     @@modules = {}
+    attr_accessor :repo_path, :folder
   
     def initialize(repo_path)
       @repo_path = $DITADO_REPO = repo_path
-      @ditado_folder = "#{repo_path}/#{REPO_FOLDER_NAME}"
-      raise DitadoNotInitializedException.new if !File.exists?(@ditado_folder)
-      @issues_folder = "#{@ditado_folder}/#{ISSUES_FOLDER_NAME}"
-      @wiki_folder = "#{@ditado_folder}/#{WIKI_FOLDER_NAME}"
+      @folder = "#{repo_path}/#{REPO_FOLDER_NAME}"
+      raise DitadoNotInitializedException.new if !File.exists?(@folder)
+      @wiki_folder = "#{@folder}/#{WIKI_FOLDER_NAME}"
     end
   
     def self.init(repo_path)
@@ -47,36 +34,6 @@ module Ditado
       raise DitadoAlreadyInittedException.new if File.exists?(ditado_folder)
       FileUtils.cp_r(SKELETON_FOLDER, ditado_folder)
       Core.new(repo_path)
-    end
-    
-    def issue_add(content)
-      new_issue_id = Digest::SHA1.hexdigest(content + diffstamp)
-      raise IssueIDAlreadyExistentException.new if issue_exists?(new_issue_id)
-      write issue_file(new_issue_id), content
-      new_issue_id
-    end
-    
-    def issue_get(id)
-      raise IssueIdNotExistentException.new if !issue_exists?(id)
-      read issue_file(id)
-    end
-    
-    def issue_edit(id, new_content)
-      raise IssueIdNotExistentException.new if !issue_exists?(id)
-      write issue_file(id), new_content
-    end
-    
-    def issue_del(id)
-      raise IssueIdNotExistentException.new if !issue_exists?(id)
-      FileUtils.rm issue_file(id)
-    end
-    
-    def issue_list
-      Dir.new(@issues_folder).entries - ['.', '..']
-    end
-    
-    def issue_exists?(id)
-      File.exists?(issue_file(id))
     end
     
     def ui_start
@@ -120,15 +77,15 @@ module Ditado
       end
     end
     
-    def self.register_module(mod)
-      @@modules[mod.prefix] = mod
+    def self.register_module(prefix, module_class)
+      @@modules[prefix] = module_class
+    end
+    
+    def self.modules
+      @@modules.dup
     end
     
     private
-    def issue_file(id)
-      issue_file = "#{@issues_folder}/#{id}"
-    end
-    
     def wiki_page_file(id)
       "#{@wiki_folder}/#{id}"
     end
@@ -137,8 +94,12 @@ module Ditado
       content.split("\n")[0].to_slug.normalize.to_s
     end
     
-    def diffstamp
-       Time.now.to_s
+    def method_missing(symbol, *args)
+      if symbol =~ /(\w[\w\d]*)_(\w.*)/ and @@modules[$1] then
+        @@modules[$1].new(self).send($2, *args)
+      else
+        super.method_missing(symbol, *args)
+      end
     end
     
     def read(file)
@@ -150,14 +111,6 @@ module Ditado
     def write(file, content)
       open(file, 'w') do |f|
         f.write content
-      end
-    end
-    
-    def method_missing(symbol, *args)
-      if symbol =~ /(\w[\w\d]*)_(\w.*)/ and @@modules[$1] then
-        @@modules[$1].module_class.new(self).send($2, *args)
-      else
-        super.method_missing(symbol, *args)
       end
     end
   
