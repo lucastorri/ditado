@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'FileUtils'
+require 'babosa'
+require 'RedCloth'
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_util')
 
 module Ditado

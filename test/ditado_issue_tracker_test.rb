@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'FileUtils'
+require 'digest/sha1'
 require File.expand_path(File.dirname(__FILE__) + '/ditado_test_helper')
 
 describe Ditado::IssueTracker, 'when working with issues' do

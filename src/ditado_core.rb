@@ -1,9 +1,5 @@
 require 'rubygems'
 require 'FileUtils'
-require 'digest/sha1'
-require 'sinatra/base'
-require 'babosa'
-require 'RedCloth'
 
 module Ditado
   
