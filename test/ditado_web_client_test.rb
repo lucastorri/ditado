@@ -8,6 +8,10 @@ describe Ditado::WebClient, 'when using UI' do
     Ditado::WebClient
   end
   
+  it 'should be a module' do
+    Ditado::Core.modules['ui'].should == Ditado::UI
+  end
+  
   before(:each) do
     setup_environment
     @ditado = Ditado::Core.init DITADO_TEST_ENVIRONMENT

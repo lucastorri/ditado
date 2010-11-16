@@ -9,13 +9,9 @@ module Ditado
   
   RESOURCES_FOLDER = File.expand_path(File.dirname(__FILE__) + '/../res')
   SKELETON_FOLDER = RESOURCES_FOLDER + '/skeleton'
-  SERVER_SCOPE = 'localhost'
-  SERVER_PORT = 9317
 
   REPO_FOLDER_NAME = '.ditado'
   PROJECT_DESC_FILE = 'project'
-  WIKI_FOLDER_NAME = 'wiki'
-  WIKI_HOME_FILE = 'index'
 
   class Core
     
@@ -33,10 +29,6 @@ module Ditado
       raise DitadoAlreadyInittedException.new if File.exists?(ditado_folder)
       FileUtils.cp_r(SKELETON_FOLDER, ditado_folder)
       Core.new(repo_path)
-    end
-    
-    def ui_start
-      Ditado::WebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
     end
     
     def self.register_module(prefix, module_class)

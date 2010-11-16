@@ -2,6 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_util')
 
 module Ditado
   
+  WIKI_FOLDER_NAME = 'wiki'
+  WIKI_HOME_FILE = 'index'
+  
   class WikiWiki
     
     def initialize(ditado)

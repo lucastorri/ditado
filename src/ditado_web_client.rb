@@ -4,6 +4,17 @@ require 'hpricot'
 
 module Ditado
   
+  SERVER_SCOPE = 'localhost'
+  SERVER_PORT = 9317
+  
+  class UI
+    
+    def start
+      Ditado::WebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
+    end
+    
+  end
+  
   class WebClient < Sinatra::Base
     
     use Rack::MethodOverride
@@ -118,3 +129,5 @@ module Ditado
   end
   
 end
+
+Ditado::Core.register_module('ui', Ditado::UI)
