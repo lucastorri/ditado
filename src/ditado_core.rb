@@ -17,6 +17,18 @@ module Ditado
   WIKI_FOLDER_NAME = 'wiki'
   WIKI_HOME_FILE = 'index'
   ISSUES_FOLDER_NAME = 'issues'
+  
+  class Module
+    
+    attr_accessor :module_class, :prefix, :methods
+    
+    def initialize(module_class, prefix, methods)
+      @module_class = module_class
+      @prefix = prefix
+      @methods = methods
+    end
+    
+  end
 
   class Core
     

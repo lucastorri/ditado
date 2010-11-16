@@ -36,18 +36,6 @@ describe Ditado::Core, 'when ditado is instaciated' do
         @@ditado.should == ditado
       end
       
-      def self.module_class
-        TestModule
-      end
-      
-      def self.prefix
-        'test'
-      end
-      
-      def self.methods
-        [:call1, :call2]
-      end
-      
       def call1
         true
       end
@@ -65,7 +53,7 @@ describe Ditado::Core, 'when ditado is instaciated' do
     should_raise_a NoMethodError do
       @ditado.test_call2
     end
-    Ditado::Core.register_module(TestModule)
+    Ditado::Core.register_module(Ditado::Module.new(TestModule, 'test', [:call1, :call2]))
     @ditado.test_call1.should be_true
     @ditado.test_call2.should be_true
   end
