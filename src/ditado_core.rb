@@ -28,6 +28,7 @@ module Ditado
     end
     
     def self.register_module(prefix, module_class)
+      raise InvalidModulePrefixException.new if not (prefix =~ /^[a-zA-Z][\da-zA-Z]*$/)
       @@modules[prefix] = module_class
     end
     
@@ -37,7 +38,7 @@ module Ditado
     
     private
     def method_missing(symbol, *args)
-      if symbol =~ /(\w[\w\d]*)_(\w.*)/ and @@modules[$1] then
+      if symbol =~ /(^[a-zA-Z][a-zA-Z\d]*)_(.*)/ and @@modules[$1] then
         @@modules[$1].new(self).send($2, *args)
       else
         super.method_missing(symbol, *args)

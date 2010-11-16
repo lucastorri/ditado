@@ -67,6 +67,18 @@ describe Ditado::Core, 'when ditado is instaciated' do
     @ditado.test_call1.should be_true
     @ditado.test_call2.should be_true
   end
+  
+  it 'should only allow modules with valid prefix' do
+    [' ', '/asd', '**', '_a', 'invalid_prefix', '31asd'].each do |invalid_prefix|
+      should_raise_a Ditado::InvalidModulePrefixException do
+        Ditado::Core.register_module(invalid_prefix, nil)
+      end
+    end
+    
+    ["prefix", 'anotherOne', 'THISTOO'].each do |valid_prefix|
+      Ditado::Core.register_module(valid_prefix, nil)
+    end
+  end
 
 end
 

@@ -26,4 +26,7 @@ module Ditado
   class DitadoWikiPageDoesNotExistException < DitadoException
   end
   
+  class InvalidModulePrefixException < DitadoException
+  end
+  
 end

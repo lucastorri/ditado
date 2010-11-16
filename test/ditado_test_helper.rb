@@ -62,9 +62,9 @@ def teardown_environment
   end
 end
 
-def should_raise_a(exception_class, &code)
+def should_raise_a(exception_class)
   begin
-    code.call
+    yield
     fail
   rescue exception_class => e
   end

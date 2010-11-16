@@ -23,20 +23,10 @@ describe Ditado::WikiWiki, 'when working with wiki pages' do
     end
     
     it 'should use the first line of the new page contents as its title' do
-      should_raise_a Ditado::InvalidDitadoWikiPageNameException do
-        @wiki.add(" ")
-      end
-      
-      should_raise_a Ditado::InvalidDitadoWikiPageNameException do
-        @wiki.add('*-*')
-      end
-      
-      should_raise_a Ditado::InvalidDitadoWikiPageNameException do
-        @wiki.add(" \n")
-      end
-      
-      should_raise_a Ditado::InvalidDitadoWikiPageNameException do
-        @wiki.add(":)")
+      [" ", "*-*", " \n", ":)"].each do |invalid_title|
+        should_raise_a Ditado::InvalidDitadoWikiPageNameException do
+          @wiki.add(invalid_title)
+        end
       end
       
       @wiki.add('a').should == 'a'
