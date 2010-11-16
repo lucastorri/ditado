@@ -12,7 +12,7 @@ describe Ditado::IssueTracker, 'when working with issues' do
     @ditado.respond_to?(:issue_add).should be_false
     @ditado.issue_add(ISSUE_CONTENT_1)
     
-    issues_module = Ditado::Core.modules['issue'].should == Ditado::IssueTracker
+    Ditado::Core.modules['issue'].should == Ditado::IssueTracker
   end
   
   context 'and creating issues' do

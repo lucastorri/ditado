@@ -6,6 +6,7 @@ require 'digest/sha1'
 require 'rack/test'
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_core')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_issue_tracker')
+require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_wiki')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_web_client')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_exceptions')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_util')
