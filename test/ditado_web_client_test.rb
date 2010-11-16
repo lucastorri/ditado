@@ -84,13 +84,13 @@ describe Ditado::WebClient, 'when using UI' do
   end
   
   it 'should have a wiki page' do
-    get '/wiki'
+    get '/wiki/index'
     last_response.should be_ok
   end
   
   it 'should parse textile files using the page paramenter' do
     @ditado.wiki_add WIKI_PAGE_CONTENT_1
-    get '/wiki', :page => 'welcome'
+    get '/wiki/welcome'
     last_response.should be_ok
     (last_response.body =~ /<b>to DITado!<\/b>/).should_not be_nil
   end

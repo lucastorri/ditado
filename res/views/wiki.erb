@@ -2,5 +2,19 @@
 	<title><%= locals[:title] %> : DITado Wiki</title>
 	<body>
 		<%= locals[:text] %>
+		<% if locals[:raw] %>
+			<%= "<form action='/wiki#{ ('/' + @page) if params.key?('edit') }' method='post'>"%>
+				<%= "<input type='hidden' name='_method' value='put' />" if params.key?('edit') %>
+				<p>Content: <textarea name="content" cols="40" rows="20"><%= locals[:raw] %></textarea></p>
+				<p><button type="summit">Save</button></p>
+			<%= "</form>" %>
+			<%= "<form action='#{request.path}' method='post'>"%>
+				<input type="hidden" name="_method" value="delete" />
+				<button type="summit">Delete</button>
+			<%= "</form>" %>
+		<% else %>
+			<p><%= "<a href='/wiki/#{@page}?edit'>Edit</a>" %></p>
+		<% end %>
+		<p><a href='/wiki_new'>New</a></p>
 	</body>
 </html>

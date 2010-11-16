@@ -96,6 +96,10 @@ module Ditado
     end
     
     def wiki_edit(id, new_content)
+      puts "\n\n\nAqui\n\n\n"
+      puts @page
+      puts wiki_page_id(new_content)
+      puts "\n\n\nAqui\n\n\n"
       if wiki_page_id(new_content) != id then
         wiki_del(id)
         wiki_add(new_content)

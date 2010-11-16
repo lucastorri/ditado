@@ -50,7 +50,6 @@ module Ditado
     get '/issues/:id' do
       @issue = to_hash @ditado.issue_get(@id)
       erb :issue
-      
     end
     
     put '/issues/:id' do
@@ -65,10 +64,41 @@ module Ditado
     
     #sinatra precondition, 1 line rescue
     get '/wiki/?' do
-      page = params[:page]
-      page_content = @ditado.wiki_textile((page and @ditado.wiki_exists?(page)) ? page : 'index')
+      redirect '/wiki/index'
+    end
+    
+    get '/wiki_new' do
+      erb :wiki, :locals => { :text => '', :title =>  'New page', :raw => '' }
+    end
+    
+    before '/wiki/:page' do
+      @page = params[:page]
+      halt not_found unless @ditado.wiki_exists?(@page)
+    end
+    
+    get '/wiki/:page' do
+      page_content = @ditado.wiki_textile(@page)
       page_content.split("\n")[0] =~ /<h1>(.*)<\/h1>/
-      erb :wiki, :locals => { :text => page_content, :title =>  $1 }
+      if params.key? 'edit' then
+        erb :wiki, :locals => { :text => page_content, :title =>  $1, :raw => @ditado.wiki_get(@page) }
+      else
+        erb :wiki, :locals => { :text => page_content, :title =>  $1 }
+      end
+    end
+    
+    post '/wiki/?' do
+      page = @ditado.wiki_add params[:content]
+      redirect "/wiki/#{page}"
+    end
+    
+    put '/wiki/:page' do
+      page = @ditado.wiki_edit(@page, params[:content]) unless @page == 'index' and params[:content].split("\n")[0] == 'index'
+      redirect "/wiki/#{page}"
+    end
+    
+    delete '/wiki/:page' do
+      @ditado.wiki_del @page unless @page == 'index'
+      redirect '/wiki' 
     end
     
     private
