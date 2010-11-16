@@ -20,17 +20,17 @@ module Ditado
     end
     
     def get(id)
-      raise IssueIdNotExistentException.new if !exists?(id)
+      raise IssueIDNotExistentException.new if !exists?(id)
       Ditado::Util.read(issue_file(id))
     end
     
     def edit(id, new_content)
-      raise IssueIdNotExistentException.new if !exists?(id)
+      raise IssueIDNotExistentException.new if !exists?(id)
       Ditado::Util.write(issue_file(id), new_content)
     end
     
     def del(id)
-      raise IssueIdNotExistentException.new if !exists?(id)
+      raise IssueIDNotExistentException.new if !exists?(id)
       FileUtils.rm issue_file(id)
     end
     
@@ -53,7 +53,7 @@ module Ditado
     
   end
   
-  class IssueIdNotExistentException < DitadoException
+  class IssueIDNotExistentException < DitadoException
   end
 
   class IssueIDAlreadyExistentException < DitadoException

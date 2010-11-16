@@ -77,7 +77,7 @@ describe Ditado::IssueTracker, 'when working with issues' do
     end
     
     it 'should not retrieve anything when the issue does not exist' do
-      should_raise_a Ditado::IssueIdNotExistentException do
+      should_raise_a Ditado::IssueIDNotExistentException do
         @tracker.get('00')
       end
     end
@@ -97,7 +97,7 @@ describe Ditado::IssueTracker, 'when working with issues' do
   context 'and removing issues' do
   
     it 'should return exception when the issue does not exist' do
-      should_raise_a Ditado::IssueIdNotExistentException do
+      should_raise_a Ditado::IssueIDNotExistentException do
         @tracker.del('00')
       end
     end
@@ -132,7 +132,7 @@ describe Ditado::IssueTracker, 'when working with issues' do
     end
     
     it 'should not be able to edit an inexistent issue' do
-      should_raise_a Ditado::IssueIdNotExistentException do
+      should_raise_a Ditado::IssueIDNotExistentException do
         @tracker.edit('00', NEW_ISSUE_CONTENT_1)
       end
     end
