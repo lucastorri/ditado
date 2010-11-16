@@ -22,7 +22,7 @@ module Ditado
   
     def self.init(repo_path)
       ditado_folder = "#{repo_path}/#{REPO_FOLDER_NAME}"
-      raise DitadoAlreadyInittedException.new if File.exists?(ditado_folder)
+      raise DitadoAlreadyInitializedException.new if File.exists?(ditado_folder)
       FileUtils.cp_r(SKELETON_FOLDER, ditado_folder)
       Core.new(repo_path)
     end
@@ -45,6 +45,18 @@ module Ditado
       end
     end
   
+  end
+  
+  class DitadoException < Exception
+  end
+  
+  class DitadoAlreadyInitializedException < DitadoException
+  end
+  
+  class DitadoNotInitializedException < DitadoException
+  end
+  
+  class InvalidModulePrefixException < DitadoException
   end
 
 end

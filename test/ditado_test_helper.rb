@@ -8,7 +8,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_core')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_issue_tracker')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_wiki')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_web_client')
-require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_exceptions')
 require File.expand_path(File.dirname(__FILE__) + '/../src/ditado_util')
 
 DITADO_TEST_ENVIRONMENT = File.dirname(__FILE__) + '/run'

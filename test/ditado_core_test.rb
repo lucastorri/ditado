@@ -137,7 +137,7 @@ describe Ditado::Core, 'when ditado is initialized on a given folder where' do
     it 'should not modify anything' do
       (File.exists? DITADO_FILES_FOLDER).should be_true
       files_before = Dir.new(DITADO_FILES_FOLDER).entries
-      should_raise_a Ditado::DitadoAlreadyInittedException do
+      should_raise_a Ditado::DitadoAlreadyInitializedException do
         Ditado::Core.init DITADO_TEST_ENVIRONMENT
       end
       files_before.should == Dir.new(DITADO_FILES_FOLDER).entries

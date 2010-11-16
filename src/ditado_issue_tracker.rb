@@ -53,6 +53,12 @@ module Ditado
     
   end
   
+  class IssueIdNotExistentException < DitadoException
+  end
+
+  class IssueIDAlreadyExistentException < DitadoException
+  end
+  
 end
 
 Ditado::Core.register_module('issue', Ditado::IssueTracker)

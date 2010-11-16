@@ -64,6 +64,15 @@ module Ditado
     
   end
   
+  class DitadoWikiPageAlreadyExistsException < DitadoException
+  end
+  
+  class InvalidDitadoWikiPageNameException < DitadoException
+  end
+  
+  class DitadoWikiPageDoesNotExistException < DitadoException
+  end
+  
 end
 
 Ditado::Core.register_module('wiki', Ditado::WikiWiki)
