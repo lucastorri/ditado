@@ -17,11 +17,57 @@ describe Ditado::Core, 'when ditado is instaciated' do
   end
 
   it 'should check if ditado was not previously initialized on the given path' do
-    begin
+    should_raise_a Ditado::DitadoNotInitializedException do
       @ditado = Ditado::Core.new DITADO_TEST_ENVIRONMENT
-      fail
-    rescue Ditado::DitadoNotInitializedException => e
     end
+  end
+  
+  it 'should be able to register modules' do
+    Ditado::Core.respond_to?(:register_module).should be_true
+    @ditado = Ditado::Core.init(DITADO_TEST_ENVIRONMENT)
+    
+    class TestModule
+      
+      def self.ditado=(ditado)
+        @@ditado = ditado
+      end
+      
+      def initialize(ditado)
+        @@ditado.should == ditado
+      end
+      
+      def self.module_class
+        TestModule
+      end
+      
+      def self.prefix
+        'test'
+      end
+      
+      def self.methods
+        [:call1, :call2]
+      end
+      
+      def call1
+        true
+      end
+      
+      def call2
+        true
+      end
+
+    end
+    TestModule.ditado = @ditado
+    
+    should_raise_a NoMethodError do
+      @ditado.test_call1
+    end
+    should_raise_a NoMethodError do
+      @ditado.test_call2
+    end
+    Ditado::Core.register_module(TestModule)
+    @ditado.test_call1.should be_true
+    @ditado.test_call2.should be_true
   end
 
 end

@@ -19,6 +19,8 @@ module Ditado
   ISSUES_FOLDER_NAME = 'issues'
 
   class Core
+    
+    @@modules = {}
   
     def initialize(repo_path)
       @repo_path = $DITADO_REPO = repo_path
@@ -96,10 +98,6 @@ module Ditado
     end
     
     def wiki_edit(id, new_content)
-      puts "\n\n\nAqui\n\n\n"
-      puts @page
-      puts wiki_page_id(new_content)
-      puts "\n\n\nAqui\n\n\n"
       if wiki_page_id(new_content) != id then
         wiki_del(id)
         wiki_add(new_content)
@@ -108,6 +106,10 @@ module Ditado
         write wiki_page_file(id), new_content
         id
       end
+    end
+    
+    def self.register_module(mod)
+      @@modules[mod.prefix] = mod
     end
     
     private
@@ -136,6 +138,14 @@ module Ditado
     def write(file, content)
       open(file, 'w') do |f|
         f.write content
+      end
+    end
+    
+    def method_missing(symbol, *args)
+      if symbol =~ /(\w[\w\d]*)_(\w.*)/ and @@modules[$1] then
+        @@modules[$1].module_class.new(self).send($2, *args)
+      else
+        super.method_missing(symbol, *args)
       end
     end
   

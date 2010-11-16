@@ -1,0 +1,6 @@
+<issue>
+<title>Objects for wiki and issue</title>
+<content>As a DITado Developer,
+I want to have classes for Wiki and Issue object,
+So I can better encapsulate logic.</content>
+</issue>
