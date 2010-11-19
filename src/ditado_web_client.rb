@@ -106,7 +106,7 @@ module Ditado
     end
     
     put '/wiki/:page' do
-      if not (@page.title == 'index' and params[:title].split("\n")[0] == 'index') then
+      if (params[:page] != 'index') then
         @page.title = params[:title]
         @page.content = params[:content]
         @page.save!
