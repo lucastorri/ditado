@@ -1,6 +1,7 @@
 <issue>
-<title>Separe logic in modules</title>
+<title>Separate logic in modules</title>
 <content>As a DITado Developer,
 I want to move functionality like wiki and issues in modules,
 So I can better separate logic and add or remove them.</content>
+<id>954e2122d2af07a173744b6c250f18dec88cc3fc</id>
 </issue>
