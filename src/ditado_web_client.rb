@@ -7,7 +7,10 @@ module Ditado
   SERVER_SCOPE = 'localhost'
   SERVER_PORT = 9317
   
-  class UI
+  class WebUI
+    
+    def initialize(ditado)
+    end
     
     def start
       Ditado::WebClient.run! :host => SERVER_SCOPE, :port => SERVER_PORT
@@ -83,32 +86,36 @@ module Ditado
     end
     
     before '/wiki/:page' do
-      @page = params[:page]
-      halt not_found unless @ditado.wiki_exists?(@page)
+      page_id = params[:page]
+      halt not_found unless @ditado.wiki_exists?(page_id)
+      @page = @ditado.wiki_get(page_id)
     end
     
     get '/wiki/:page' do
-      page_content = @ditado.wiki_textile(@page)
-      page_content.split("\n")[0] =~ /<h1>(.*)<\/h1>/
       if params.key? 'edit' then
-        erb :wiki, :locals => { :text => page_content, :title =>  $1, :raw => @ditado.wiki_get(@page) }
+        erb :wiki, :locals => { :text => @page.to_html, :title =>  @page.title, :raw => @page.content, :id => @page.id }
       else
-        erb :wiki, :locals => { :text => page_content, :title =>  $1 }
+        erb :wiki, :locals => { :text => @page.to_html, :title =>  @page.title }
       end
     end
     
     post '/wiki/?' do
-      page = @ditado.wiki_add params[:content]
-      redirect "/wiki/#{page}"
+      page = Ditado::WikiPage.new(params[:title], params[:content])
+      page = @ditado.wiki_add page
+      redirect "/wiki/#{page.id}"
     end
     
     put '/wiki/:page' do
-      page = @ditado.wiki_edit(@page, params[:content]) unless @page == 'index' and params[:content].split("\n")[0] == 'index'
-      redirect "/wiki/#{page}"
+      if not (@page.title == 'index' and params[:title].split("\n")[0] == 'index') then
+        @page.title = params[:title]
+        @page.content = params[:content]
+        @page.save!
+      end
+      redirect "/wiki/#{@page.id}"
     end
     
     delete '/wiki/:page' do
-      @ditado.wiki_del @page unless @page == 'index'
+      @page.remove! unless @page.id == 'index'
       redirect '/wiki' 
     end
     
@@ -130,4 +137,4 @@ module Ditado
   
 end
 
-Ditado::Core.register_module('ui', Ditado::UI)
+Ditado::Core.register_module('ui', Ditado::WebUI)

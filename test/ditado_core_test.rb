@@ -113,7 +113,7 @@ describe Ditado::Core, 'when ditado is initialized on a given folder where' do
       (File.directory?DITADO_WIKI_FOLDER).should be_true
       (File.file? DITADO_WIKI_HOME_FILE).should be_true
       open(DITADO_WIKI_HOME_FILE) do |f|
-        f.read.should == "Index"
+        f.read.should == "<page><title>Index</title><content>h1. Welcome to Ditado!</content></page>"
       end
     end
     

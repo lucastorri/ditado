@@ -25,18 +25,20 @@ ISSUE_CONTENT_2 = 'It is still not working, dam you!'
 ISSUE_CONTENT_2_SHA1 = '4a5f26421fcc2d1d92174b920ef4729a05858254'
 ISSUE_CONTENT_2_FILE = "#{DITADO_ISSUES_FOLDER}/#{ISSUE_CONTENT_2_SHA1}"
 
+WIKI_PAGE_CONTENT_1_TITLE = 'Welcome'
 WIKI_PAGE_CONTENT_1 = %q{Welcome...
 
 **to DITado!**
 }
 WIKI_PAGE_CONTENT_1_ID = 'welcome'
 WIKI_PAGE_CONTENT_1_FILE = "#{DITADO_WIKI_FOLDER}/#{WIKI_PAGE_CONTENT_1_ID}"
+WIKI_PAGE_CONTENT_1_RAW = "<page><title>#{WIKI_PAGE_CONTENT_1_TITLE}</title><content>#{WIKI_PAGE_CONTENT_1}</content></page>"
+WIKI_PAGE_CONTENT_2_TITLE = 'Welcome to this **new** page!'
 WIKI_PAGE_CONTENT_2 = %q{Welcome to this **new** page!
 
 h2. and the text goes on... 
 # 1
-# 2
-}
+# 2}
 WIKI_PAGE_CONTENT_2_ID = 'welcome-to-this-new-page'
 WIKI_PAGE_CONTENT_2_FILE = "#{DITADO_WIKI_FOLDER}/#{WIKI_PAGE_CONTENT_2_ID}"
 WIKI_PAGE_CONTENT_2_AS_TEXTILE = %q{<h1>Welcome to this <b>new</b> page!</h1>
@@ -45,6 +47,7 @@ WIKI_PAGE_CONTENT_2_AS_TEXTILE = %q{<h1>Welcome to this <b>new</b> page!</h1>
 	<li>1</li>
 	<li>2</li>
 </ol>}
+WIKI_PAGE_CONTENT_2_RAW = "<page><title>#{WIKI_PAGE_CONTENT_2_TITLE}</title><content>#{WIKI_PAGE_CONTENT_2}</content></page>"
 
 def setup_environment
   teardown_environment

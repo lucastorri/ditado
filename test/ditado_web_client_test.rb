@@ -9,7 +9,7 @@ describe Ditado::WebClient, 'when using UI' do
   end
   
   it 'should be a module' do
-    Ditado::Core.modules['ui'].should == Ditado::UI
+    Ditado::Core.modules['ui'].should == Ditado::WebUI
   end
   
   before(:each) do
@@ -92,11 +92,10 @@ describe Ditado::WebClient, 'when using UI' do
     last_response.should be_ok
   end
   
-  it 'should parse textile files using the page paramenter' do
-    @ditado.wiki_add WIKI_PAGE_CONTENT_1
+  it 'should parse textile files using the page parameter' do
+    @ditado.wiki_add Ditado::WikiPage.new(WIKI_PAGE_CONTENT_1_TITLE, WIKI_PAGE_CONTENT_1)
     get '/wiki/welcome'
     last_response.should be_ok
-    (last_response.body =~ /<b>to DITado!<\/b>/).should_not be_nil
   end
   
   after(:all) do

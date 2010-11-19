@@ -3,8 +3,9 @@
 	<body>
 		<%= locals[:text] %>
 		<% if locals[:raw] %>
-			<%= "<form action='/wiki#{ ('/' + @page) if params.key?('edit') }' method='post'>"%>
+			<%= "<form action='/wiki#{ ('/' + locals[:id]) if params.key?('edit') }' method='post'>"%>
 				<%= "<input type='hidden' name='_method' value='put' />" if params.key?('edit') %>
+				<%= "<p>Title: <input name=\"title\" value=\"#{locals[:title]}\" /></p>" %>
 				<p>Content: <textarea name="content" cols="40" rows="20"><%= locals[:raw] %></textarea></p>
 				<p><button type="summit">Save</button></p>
 			<%= "</form>" %>
@@ -13,7 +14,7 @@
 				<button type="summit">Delete</button>
 			<%= "</form>" %>
 		<% else %>
-			<p><%= "<a href='/wiki/#{@page}?edit'>Edit</a>" %></p>
+			<p><%= "<a href='/wiki/#{@page.id}?edit'>Edit</a>" %></p>
 		<% end %>
 		<p><a href='/wiki_new'>New</a></p>
 	</body>
